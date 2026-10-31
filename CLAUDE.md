@@ -10,7 +10,7 @@
 - **不要 push 到 GitHub。** 由 Lingtong 自己看懂后提交。
 - 代码注释用英文；给 Lingtong 的讲解用中文。
 - 网站界面**全英文**，**手机优先**，要检查小屏和大屏之间的布局。
-- 前端设计必须使用 **ui-ux-pro-max** skill（https://github.com/nextlevelbuilder/ui-ux-pro-max-skill ），已经装在项目的 `.claude/skills/` 里。所有前端设计都要先用它，而且要做得**有辨识度**，不要做成千篇一律的模板风格。
+- 前端设计必须使用 **ui-ux-pro-max** skill（https://github.com/nextlevelbuilder/ui-ux-pro-max-skill ），已经装在全局 `~/.claude/skills/`（所有项目都能用；项目里那份不进 git）。所有前端设计都要先用它，而且要做得**有辨识度**，不要做成千篇一律的模板风格。
 - **设计已定（2026-10-31）**：见 `design-system/icpc-checkpoint/MASTER.md`。深蓝底，当前任务用琥珀色描边。很多志愿者不是计算机专业的，所以**通俗易懂、不花哨**：每个任务一张卡片，只写时间、任务名、地点，用 Now / Next / Done 这种日常词，不用 AC、RUNNING 之类的行话。
 
 ## 项目目标

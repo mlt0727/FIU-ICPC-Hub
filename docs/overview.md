@@ -131,7 +131,7 @@ Excel 名单 ──(npm run db:import)──▶ Neon 数据库 ◀──(管理�
 | `public/pg6-map.webp` | PG6 平面图 |
 | `proxy.ts` | `/admin?key=密码`：点一下就登录管理页 |
 | `.env.local` | 真实的密钥和密码（不进 git）；`.env.example` 是空模板 |
-| `.claude/skills/` | ui-ux-pro-max 设计 skill |
+| `.claude/skills/` | ui-ux-pro-max 设计 skill 的本地副本（不进 git；全局那份在 `~/.claude/skills/`） |
 | `AGENTS.md` | 给 AI 的提醒：这是新版 Next.js，写代码前要先看文档 |
 | `package.json` | 依赖和上面那些 `npm run` 命令 |
 
