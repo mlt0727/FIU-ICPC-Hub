@@ -59,3 +59,7 @@ create table if not exists push_subscriptions (
 
 -- Step 4: when the "starts in 10 minutes" push was sent for this shift (null = not yet). Stops double reminders.
 alter table shifts add column if not exists reminder_sent_at timestamptz;
+
+-- Location for this one person's shift, when people on the same task go to different places
+-- (e.g. Print Running: some in Room 105, some in Room 106). Empty = use the task's location.
+alter table shifts add column if not exists location text;

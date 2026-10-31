@@ -20,7 +20,7 @@ export async function getVolunteer(slug: string): Promise<Volunteer | null> {
   if (!v) return null;
 
   const rows = await sql`
-    select t.name as task, t.location, s.starts_at, s.ends_at
+    select t.name as task, coalesce(s.location, t.location) as location, s.starts_at, s.ends_at
     from shifts s join tasks t on t.id = s.task_id
     where s.volunteer_id = ${v.id}
     order by s.starts_at`;

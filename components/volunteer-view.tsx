@@ -1,3 +1,4 @@
+import { mapsLinkFor, roomsIn } from "@/lib/rooms";
 import type { Volunteer } from "@/lib/schedule";
 import { formatEventDay, formatHours, formatRange, formatTime } from "@/lib/time";
 import { NotifyButton } from "./notify-button";
@@ -39,7 +40,12 @@ export function VolunteerView({ volunteer: v, now }: { volunteer: Volunteer; now
         </div>
       ) : (
         <TaskList
-          cards={v.shifts.map((s) => ({ ...s, time: formatRange(s.startsAt, s.endsAt) }))}
+          cards={v.shifts.map((s) => ({
+            ...s,
+            rooms: roomsIn(s.location),
+            mapsUrl: mapsLinkFor(s.location),
+            time: formatRange(s.startsAt, s.endsAt),
+          }))}
           serverNow={frozen ? frozenNow : Date.now()}
           frozen={frozen}
         />

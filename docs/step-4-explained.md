@@ -50,6 +50,7 @@
 | `on` | 已经开了 | "Reminders are on for this phone." + "Send a test notification" 按钮 |
 | `blocked` | 用户点了"不允许" | 告诉他去手机设置里打开 |
 | `error` | 其他错误 | "Try again" 按钮 |
+| `not-set-up` | 服务器上没有 VAPID 公钥（Vercel 环境变量没填） | "Reminders aren't available yet." |
 | `unsupported` | 很老的浏览器 | 什么都不显示 |
 
 几个细节：

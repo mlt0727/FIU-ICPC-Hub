@@ -5,7 +5,16 @@ import { REMINDER_MINUTES } from "@/lib/time";
 
 // The "Turn on reminders" box on a volunteer's page.
 // iPhone only allows notifications inside the Home Screen app, so in plain Safari it explains that step instead.
-type State = "loading" | "needs-home-screen" | "unsupported" | "off" | "working" | "on" | "blocked" | "error";
+type State =
+  | "loading"
+  | "needs-home-screen"
+  | "unsupported"
+  | "not-set-up"
+  | "off"
+  | "working"
+  | "on"
+  | "blocked"
+  | "error";
 
 export function NotifyButton({ slug, publicKey }: { slug: string; publicKey: string }) {
   const [state, setState] = useState<State>("loading");
@@ -19,6 +28,8 @@ export function NotifyButton({ slug, publicKey }: { slug: string; publicKey: str
         setState(iOS ? "needs-home-screen" : "unsupported");
         return;
       }
+      // No VAPID key on the server (env var missing): the phone would refuse to subscribe without even asking.
+      if (!publicKey) return setState("not-set-up");
       if (Notification.permission === "denied") return setState("blocked");
       const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" });
       const existing = await reg.pushManager.getSubscription();
@@ -28,8 +39,11 @@ export function NotifyButton({ slug, publicKey }: { slug: string; publicKey: str
       } else {
         setState("off");
       }
-    })().catch(() => setState("error"));
-  }, [slug]);
+    })().catch((e) => {
+      console.error("Reminders setup failed", e);
+      setState("error");
+    });
+  }, [slug, publicKey]);
 
   // Must run straight from the tap: iPhone only shows the permission question after a user gesture.
   async function turnOn() {
@@ -39,7 +53,8 @@ export function NotifyButton({ slug, publicKey }: { slug: string; publicKey: str
       const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(publicKey) });
       await save(slug, sub);
       setState("on");
-    } catch {
+    } catch (e) {
+      console.error("Turning on reminders failed", e);
       setState(Notification.permission === "denied" ? "blocked" : "error");
     }
   }
@@ -82,7 +97,8 @@ export function NotifyButton({ slug, publicKey }: { slug: string; publicKey: str
           {testNote && <p className="notify-note">{testNote}</p>}
         </>
       )}
-      {state === "blocked" && <p>Notifications are blocked. Turn them on for FIU ICPC Hub in your phone&apos;s Settings, then reopen this page.</p>}
+      {state === "not-set-up" && <p>Reminders aren&apos;t available yet. Check back later.</p>}
+      {state === "blocked" &&<p>Notifications are blocked. Turn them on for FIU ICPC Hub in your phone&apos;s Settings, then reopen this page.</p>}
       {state === "error" && (
         <>
           <p>Couldn&apos;t turn on reminders.</p>

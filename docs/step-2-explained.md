@@ -113,3 +113,49 @@ npm run dev
 - 文件开头加了一个看不见的 BOM 字符（`﻿`），告诉 Excel "这是 UTF-8"。不加的话，`González` 在 Excel 里会变成乱码。
 - **这个 CSV 不进 git**（`.gitignore` 里加了 `volunteer-links.csv`），因为里面是名单，和 Excel 文件的规则一样。
 - 时间格式复用了 `lib/time.ts` 的 `formatTime`，和网页上显示的一模一样。
+
+## 地点和地图（"Show on map"）
+
+| 文件 | 作用 |
+|---|---|
+| `public/pg6-map.webp` | Lingtong 给的 PG6 平面图（1578 × 996 像素） |
+| `lib/rooms.ts` | 地图上每个房间的轮廓坐标，以及 `roomsIn()`：从地点文字里找出提到了哪些房间 |
+| `components/room-map.tsx` | 显示平面图，把指定的房间用琥珀色框出来 |
+| `components/task-list.tsx` | 卡片上加了 "Show on map"，点开就在卡片里显示地图 |
+| `components/volunteer-view.tsx` | 给每张卡片算好要高亮的房间 |
+| `db/schema.sql` | `shifts` 表加了 `location` 列：同一个任务的不同人可以去不同地方 |
+| `lib/schedule.ts` | 卡片上的地点 = 这个人自己的地点（如果有），否则用任务的地点 |
+| `scripts/apply-task-details.ts` | 支持 `byPerson`，按人分配地点 |
+
+**地点文字怎么变成地图高亮？** `roomsIn("PG6 116")` 会在文字里找 `116` 这个完整的数字（`1160` 不算），找到就高亮 116 房间。所以地点只要写 `PG6 116`、`Room 116` 都行，不用另外再填一个"房间号"。地点里没有地图上的房间（比如 `PG6 Lobby`、`Graham Center`），卡片上就不显示 "Show on map"。
+
+**高亮是怎么画上去的？** 图片上面盖了一层大小完全相同的 SVG，SVG 用的是图片自己的像素坐标（`viewBox="0 0 1578 996"`）。所以不管手机多宽，框都正好对准房间。每个房间画两次：先画一条深色的粗线，再在上面画一条琥珀色的细线。这样在橙色的 112 房间上也看得清。
+
+**"Show on map" 用的是 HTML 自带的 `<details>`**：点一下展开，再点一下收起，不用写任何 JavaScript，键盘和读屏软件也都能用。地图可以用两根手指放大（我们没有禁止缩放）。
+
+**按人分配地点（`byPerson`）**：Print Running 有人在 105，有人在 106。`task-details.json` 里这样写：
+
+```json
+"Print Running": {
+  "location": "PG6 105 or 106",
+  "byPerson": { "PG6 105": ["名字1", "名字2"], "PG6 106": ["名字3"] }
+}
+```
+
+运行 `npm run db:details` 后，这些人的卡片显示自己的房间，地图也只高亮自己的房间；没分配到的人看到的是 "PG6 105 or 106"，两个房间都高亮。名字必须和名单里**一字不差**，对不上的会打印警告。`--reset` 重新导入以后要再运行一次 `npm run db:details`。
+
+**以后加新地点（比如 Lobby、门口）**：在 `lib/rooms.ts` 的 `ROOMS` 里加一行，写上 id（比如 `"Lobby"`）、显示名，以及在图片上按顺时针读出的各个角的坐标。地点文字里出现这个 id，就会自动高亮。
+
+### 第二轮（Lobby、Directions 站位、Graham Center）
+
+- **新地图**：`public/pg6-map.webp` 换成了 Lingtong 标上 "Lobby" 的版本（1579 × 996）。
+- **Lobby**：`lib/rooms.ts` 里加了 `Lobby` 的轮廓，地点写 `PG6 Lobby` 的任务（Registration、Move people into 116、Extra、Dinner、Awards）都会高亮它。
+- **Directions 的 3 个站位**：按 Lingtong 圈的位置画了 3 个椭圆（`oval()` 用 16 条边近似一个椭圆）：
+  - Spot 1：Lobby 下面
+  - Spot 2：106 南边的门口
+  - Spot 3：东边的小院子
+
+  这 3 个站位都属于同一组 `Outside PG6`。地点文字只写 `Outside PG6` 时，三个都高亮；写了 `Spot 2` 时，只高亮 Spot 2（具体编号优先于组名）。
+- **括号里的文字不参与匹配**：`Spot 1 (below the Lobby)` 只高亮 Spot 1，不会把 Lobby 也高亮。这是测试时发现的问题，已经修好。所以描述性的话都写在括号里。
+- **Google Maps**：地点里有 "Graham Center" 的卡片，会显示 "Open in Google Maps ↗"，点开就用谷歌地图搜 FIU 的 Graham Center。其他地图上没有的地点，在 `lib/rooms.ts` 的 `EXTERNAL` 里加一行就行。
+- **自测**：`npx tsx scripts/check-rooms.ts`，检查各种地点文字匹配到的房间对不对。

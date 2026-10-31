@@ -84,9 +84,30 @@
      - `public/sw.js`、保存订阅、"Send a test notification"。
      - 任务开始前 10 分钟自动提醒（`/api/cron/reminders`，同一个时段不会重复提醒）。
    - ✅ 本地已检查：接口的密码校验和输入校验都正常；提醒的 SQL 用"假装比赛日 11:52"验证过，选出的时段是对的。
-   - ⬜ **Lingtong 要做的（按顺序）**：见下面"上线推送通知"。
-   - ⬜ 真机测试：iPhone 和安卓都要收到测试通知。
+   - ✅ 代码已 push 上线（提交 `Notification feature`）。
+   - ❌ **第一次 iPhone 测试失败**：显示 "Couldn't turn on reminders"，系统也没弹出权限询问。
+     - **原因**：3 个环境变量没有填到 Vercel，线上页面拿到的公钥是空的，手机直接拒绝了订阅。
+     - 已加保护：没有公钥时改为显示 "Reminders aren't available yet."；出错时会在浏览器控制台打印原因。
+   - ✅ **Lingtong 填好密钥后再测：iPhone 能开通知，测试通知也能收到。**
+   - ⬜ 设置 cron-job.org（见下面"上线推送通知"第 4 条），不然任务前提醒不会发。
+   - ⬜ 安卓测试。
    - ⬜ 公告推送（跟管理页一起做）。
+
+## 地点和地图（2026-10-31 做的，讲解见 `docs/step-2-explained.md` 最后一节）
+
+- Lingtong 已经在 `data/task-details.json` 里填了大部分地点，已用 `npm run db:details` 写进数据库。他把 Photography 和 Balloon Running 的地点误写在 `instructions` 里了，Claude 已经挪到 `location`。
+- Claude 按 Lingtong 的口头说明补了三项：Extra → `PG6 Lobby`；Directions → `Outside PG6`；Print Running → `PG6 105 or 106`。**这三项 Lingtong 原来填的值没有提交过，被脚本覆盖了，找不回来；当时推测他原来没填，要请他确认。**
+- **地图**：`public/pg6-map.webp`（Lingtong 给的平面图，已标出 Lobby）。地图上能高亮的地方：116、112、105、106、Lobby，以及 Directions 的 Spot 1/2/3（都在 `lib/rooms.ts` 里）。卡片上的地点文字提到这些地方，就会显示 "Show on map"，点开后高亮。括号里的文字只是描述，不参与匹配。
+- **Graham Center**（Lunch）不在平面图上，卡片显示 "Open in Google Maps ↗"。
+- **按人分配地点**：`shifts.location` 列，加上 `task-details.json` 里的 `byPerson`。已经分好：
+  - **Print Running**：Lingtong 让 Claude 自己分，Claude 按名字字母顺序分的。
+    - 105：Muhammad Abuzar、Oliver Hernandez、Olivia Mason（比赛期间也在跑），以及 Fabiola Cagigas、Godwin Siyou Simo、Jonathan Gaspar（只做中午 12:00–1:00）。
+    - 106：Pedro Remior、Subhash Gurappa、Yassine Mekdad（比赛期间也在跑），以及 Lyna Hamlaoui、Matthew Chavez-Alvarez、Muhammad Zain ul Abideen（只做中午）。
+
+    Lingtong 说的 "10" 和 "166" 都按 105 / 106 理解。
+  - **Directions**：Alex Santa Maria → Spot 1（Lobby 下面），Felipe Trujillo → Spot 2（106 南门），Oliver Hernandez → Spot 3（东边院子）。谁站哪个点是 Claude 按字母顺序定的，Lingtong 可以换。
+  - 改分配：在 `task-details.json` 的 `byPerson` 里改名字，然后运行 `npm run db:details`，不用部署。
+- Event Break Down 和 Photography 写的是 "PG6"：工作范围是整个比赛现场，**不需要地图**（Lingtong 已确认）。
 
 ## 上线推送通知（Lingtong 要做的）
 
@@ -96,7 +117,7 @@
    - `CRON_SECRET`（选 Sensitive）
 
    Claude 不能读这些密钥，所以这一步要 Lingtong 自己做。**`.env.local` 里的 VAPID 密钥以后不要换**：换了以后，所有已经开通知的手机都收不到了。
-2. 提交并 push，Vercel 自动部署。**最好先做第 1 步再 push**；顺序反了也能部署成功，只是在填好密钥、重新部署之前，按钮会显示出错。
+2. **填好以后必须重新部署一次**，环境变量才会生效：提交并 push（会自动部署），或者在 Vercel 的 Deployments 里对最新部署点 Redeploy。只填变量、不重新部署，线上还是拿不到密钥。
 3. 真机测试：从主屏幕打开 → Turn on reminders → 允许 → Send a test notification。
 4. **设置 cron-job.org**（免费，账号要 Lingtong 自己注册）：
    - 新建 job，URL 填 `https://fiu-icpc-hub.vercel.app/api/cron/reminders`，频率选每分钟。
@@ -111,18 +132,15 @@
 
 ## 接下来从这里开始（建议顺序）
 
-1. **上线推送通知**：按上面"上线推送通知"那一节做，真机测通。
-2. **换成真 logo**：Lingtong 提供 FIU 和 ICPC 的官方 logo 文件（最好是 SVG 或大尺寸透明 PNG），并确认 FIU 的品牌规范允许这样用。不要自己画、也不要从网上随便找。拿到以后放进 `public/`，改 `app/icons/[size]/route.tsx`：FIU logo 在上，ICPC logo 在下。图标最小只有 180px，两个 logo 都要在这么小的尺寸下还看得清。
-3. **填地点**：Lingtong 有空时填 `data/task-details.json` 的 `location`（和 `instructions`），然后运行 `npm run db:details`，网站马上生效，不用部署。
-   - 时间不用填，每个人的时间来自 Excel。
-   - 任务名不要改，要和数据库里一字不差。
-4. **地图功能（要记得加）**：Lingtong 的地图还没准备好。等有了地图，点卡片上的地点要能打开地图，并标出那个位置。可能的做法：一张场地图片加标记，或者每个地点配一个 Google Maps 链接，到时候看素材再定。参赛者页面也要用这张地图。
-5. **管理页**（带密码，密码放在 Vercel 环境变量）：
+1. **设置 cron-job.org**（上面"上线推送通知"第 4 条），并用安卓测一次。
+2. **请 Lingtong 确认地点分配**：Print Running 105/106 的分法、Directions 谁站哪个点（见上面"地点和地图"）。
+3. **换成真 logo**：Lingtong 提供 FIU 和 ICPC 的官方 logo 文件（最好是 SVG 或大尺寸透明 PNG），并确认 FIU 的品牌规范允许这样用。不要自己画、也不要从网上随便找。拿到以后放进 `public/`，改 `app/icons/[size]/route.tsx`：FIU logo 在上，ICPC logo 在下。图标最小只有 180px，两个 logo 都要在这么小的尺寸下还看得清。
+4. **管理页**（带密码，密码放在 Vercel 环境变量）：
    - 改任务的地点和说明（填好以后卡片上就不再显示 "Location coming soon"）。
    - 改某个人的时段。
    - 发公告：存进 `announcements` 表，同时推送；网页上也显示最新公告。
-6. **参赛者页面**：时间表、地图、餐厅和回来的路线，等 Lingtong 给素材。
-7. **比赛前收尾**：
+5. **参赛者页面**：时间表、地图（可以复用 `components/room-map.tsx`）、餐厅和回来的路线，等 Lingtong 给素材。
+6. **比赛前收尾**：
    - 写给志愿者的"添加到主屏幕并打开通知"说明（英文）。
    - 决定要不要删掉 Lingtong 的测试数据（`delete from volunteers where slug = 'lingtong-meng';`），Breakfast Setup 这个任务要不要留。
    - 用几个真实志愿者的链接抽查一遍。
@@ -139,6 +157,8 @@
 | `scripts/apply-task-details.ts` | `npm run db:details`，把 task-details.json 写进数据库，可以重复运行 |
 | `docs/step-4-explained.md` | 第 4 步（推送通知）的中文逐文件讲解 |
 | `lib/push.ts`、`lib/push-subscription.ts`、`public/sw.js`、`components/notify-button.tsx`、`app/api/` | 推送通知，见第 4 步讲解 |
+| `public/pg6-map.webp`、`lib/rooms.ts`、`components/room-map.tsx` | PG6 平面图和房间高亮，见第 2 步讲解最后一节 |
+| `scripts/check-rooms.ts` | 地点文字 → 地图高亮的自测：`npx tsx scripts/check-rooms.ts` |
 | `scripts/check-push-subscription.ts` | 订阅数据检查的自测：`npx tsx scripts/check-push-subscription.ts` |
 | `data/corrections.json` | Excel 已知错误的修正 |
 | `data/all-hands.json` | Orientation 规则 |
@@ -183,5 +203,5 @@ npm run db:import -- "Final Volunteer_Availability.xlsx" --reset
 - 参赛者内容：地图、餐厅路线、座位表的素材。
 - 管理页密码。
 - 任务开始前几分钟提醒：现在先用 10 分钟（`lib/time.ts` 的 `REMINDER_MINUTES`），Lingtong 想改再说。
-- 地图（地图功能要加，素材还没准备好）。
+- 地图：PG6 平面图、Lobby、Directions 站位、Graham Center 的 Google Maps 链接都已经有了。参赛者页面还需要"从 Graham Center 走回 PG6"的路线（看要不要做）。
 - 技术组卡片上写什么（现在写的是 "Tech team details will appear here."）。

@@ -1,9 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { RoomMap } from "./room-map";
 
 // One card per task. Runs in the browser so the "Now" outline moves on its own as time passes.
-export type Card = { task: string; location: string | null; startsAt: string; endsAt: string; time: string };
+// `rooms` = places on the floor plan that this card's location mentions (empty = no "Show on map").
+// `mapsUrl` = Google Maps link for places that aren't on the floor plan (Graham Center).
+export type Card = {
+  task: string;
+  location: string | null;
+  rooms: string[];
+  mapsUrl: string | null;
+  startsAt: string;
+  endsAt: string;
+  time: string;
+};
 
 export function TaskList({ cards, serverNow, frozen }: { cards: Card[]; serverNow: number; frozen: boolean }) {
   // Start from the server's clock so the first render matches the HTML, then switch to the phone's clock.
@@ -34,6 +45,18 @@ export function TaskList({ cards, serverNow, frozen }: { cards: Card[]; serverNo
               <PinIcon />
               {c.location ?? "Location coming soon"}
             </p>
+            {c.rooms.length > 0 && (
+              // <details> opens and closes by itself in the browser: no extra code, works with keyboard and screen readers.
+              <details className="card-map">
+                <summary>Show on map</summary>
+                <RoomMap highlight={c.rooms} />
+              </details>
+            )}
+            {c.mapsUrl && (
+              <a className="card-map-link" href={c.mapsUrl} target="_blank" rel="noopener noreferrer">
+                Open in Google Maps ↗
+              </a>
+            )}
           </li>
         );
       })}

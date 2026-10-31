@@ -1,66 +1,95 @@
 {
   "Breakfast Setup": {
-    "location": "",
+    "location": "PG6 112",
     "instructions": ""
   },
   "Registration": {
-    "location": "",
+    "location": "PG6 Lobby",
     "instructions": ""
   },
   "Photography": {
-    "location": "",
+    "location": "PG6",
     "instructions": ""
   },
   "Directions": {
-    "location": "",
-    "instructions": ""
+    "location": "Outside PG6",
+    "instructions": "",
+    "byPerson": {
+      "Outside PG6 · Spot 1 (below the Lobby)": [
+        "Alex Santa Maria"
+      ],
+      "Outside PG6 · Spot 2 (south entrance, by 106)": [
+        "Felipe Trujillo"
+      ],
+      "Outside PG6 · Spot 3 (east courtyard)": [
+        "Oliver Hernandez"
+      ]
+    }
   },
   "Volunteer Check In": {
-    "location": "",
+    "location": "PG6 112",
     "instructions": ""
   },
   "Extra": {
-    "location": "",
+    "location": "PG6 Lobby",
     "instructions": ""
   },
   "Move people into 116": {
-    "location": "",
+    "location": "PG6 Lobby",
     "instructions": ""
   },
   "Orientation": {
-    "location": "",
+    "location": "PG6 116",
     "instructions": ""
   },
   "Print Running": {
-    "location": "",
-    "instructions": ""
+    "location": "PG6 105 or 106",
+    "instructions": "",
+    "byPerson": {
+      "PG6 105": [
+        "Muhammad Abuzar",
+        "Oliver Hernandez",
+        "Olivia Mason",
+        "Fabiola Cagigas",
+        "Godwin Siyou Simo",
+        "Jonathan Gaspar"
+      ],
+      "PG6 106": [
+        "Pedro Remior",
+        "Subhash Gurappa",
+        "Yassine Mekdad",
+        "Lyna Hamlaoui",
+        "Matthew Chavez-Alvarez",
+        "Muhammad Zain ul Abideen"
+      ]
+    }
   },
   "Lunch": {
-    "location": "",
+    "location": "Graham Center(GC) 8 street",
     "instructions": ""
   },
   "Contest Set Up": {
-    "location": "",
+    "location": "PG6 116",
     "instructions": ""
   },
   "Balloon Running": {
-    "location": "",
+    "location": "PG6 106",
     "instructions": ""
   },
   "Proctors": {
-    "location": "",
+    "location": "PG6 116",
     "instructions": ""
   },
   "Event Break Down": {
-    "location": "",
+    "location": "PG6",
     "instructions": ""
   },
   "Dinner": {
-    "location": "",
+    "location": "PG6 Lobby",
     "instructions": ""
   },
   "Awards": {
-    "location": "",
+    "location": "PG6 Lobby",
     "instructions": ""
   }
 }
