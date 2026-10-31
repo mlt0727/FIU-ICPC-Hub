@@ -10,7 +10,7 @@ export function VolunteerView({ volunteer: v, now }: { volunteer: Volunteer; now
 
   return (
     <section>
-      <p className="eyebrow">ICPC Checkpoint · {formatEventDay()}</p>
+      <p className="eyebrow">ICPC Volunteer · {formatEventDay()}</p>
       <h1>{v.name}</h1>
       {v.arriveAt && v.leaveAt && (
         <dl className="hours">

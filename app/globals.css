@@ -29,11 +29,12 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
-/* One centered column, at most 480px wide. env(...) keeps text clear of the notch and home bar. */
+/* One centered column, at most 480px wide. env(...) is the height of the notch / status bar / home bar;
+   the top adds 20px on top of it so the first line doesn't sit right under the (blurred) status bar. */
 main {
   max-width: 480px;
   margin: 0 auto;
-  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+  padding: calc(env(safe-area-inset-top) + 20px) max(16px, env(safe-area-inset-right))
     max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
 }
 

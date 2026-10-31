@@ -67,9 +67,10 @@
 
 - **manifest** 是一个 JSON，告诉手机"添加到主屏幕"后叫什么名字、用什么图标、点开时打开哪个网址。
 - `/lingtong-meng` 页面的 `generateMetadata` 会在网页 `<head>` 里放 `<link rel="manifest" href="/manifest/lingtong-meng">`。这个 manifest 里 `start_url` 是 `/lingtong-meng`，所以从这页添加到主屏幕，**点图标永远打开你自己的页面**。页面一打开，`remember-me` 就会在主屏幕 app 自己的 cookie 里再写一次。这样就算 iPhone 不把 Safari 的 cookie 带过来，也没关系。
+- 主屏幕图标下面的名字来自两处：manifest 里的 `name` / `short_name`，以及 iPhone 专用的 `apple-mobile-web-app-title` 标签。志愿者这两处都是 "ICPC Volunteer"，由 `lib/manifest.ts` 的 `volunteerMetadata()` 统一设置；参赛者暂时还是 "ICPC Checkpoint"。改了名字以后，已经添加过的图标不会自动改名，要删掉重新添加。
 - `id` 每人不同，所以两个人用同一台手机，也会装成两个不同的 app。`scope: "/"` 让点到网站里其他页面时还留在 app 里。
 - 通用首页也做了一个保护：如果你有 cookie、却从 `/` 添加到主屏幕，`/` 也会给你挂上你自己的 manifest。
-- `layout.tsx` 里的 `appleWebApp` 会生成 iPhone 专用的标签：可以全屏打开，状态栏透明。`viewportFit: "cover"` 让深色背景铺到刘海下面，`globals.css` 里的 `env(safe-area-inset-*)` 再把文字往里推，不会被刘海挡住。
+- `layout.tsx` 里的 `appleWebApp` 会生成 iPhone 专用的标签：可以全屏打开，状态栏透明。`viewportFit: "cover"` 让深色背景铺到刘海下面，`globals.css` 里的 `env(safe-area-inset-*)` 再把文字往里推，不会被刘海挡住。顶部是"状态栏高度 + 20px"：只留状态栏的高度时，第一行字正好贴在 iPhone 状态栏下面，被模糊效果盖住了（真机测试时发现的）。
 
 ## `app/icons/[size]/route.tsx`
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { VolunteerView } from "@/components/volunteer-view";
+import { volunteerMetadata } from "@/lib/manifest";
 import { getVolunteer } from "@/lib/schedule";
 
 type Props = { searchParams: Promise<{ now?: string }> };
@@ -14,7 +15,7 @@ async function rememberedVolunteer() {
 export async function generateMetadata(): Promise<Metadata> {
   // If a volunteer adds the general page to the home screen anyway, still give the icon their personal manifest.
   const volunteer = await rememberedVolunteer();
-  return volunteer ? { manifest: `/manifest/${volunteer.slug}` } : {};
+  return volunteer ? volunteerMetadata(volunteer.slug) : {};
 }
 
 export default async function Home({ searchParams }: Props) {

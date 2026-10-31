@@ -1,6 +1,6 @@
 # ICPC day website — 项目交接说明
 
-> Claude Code 每次在这个文件夹启动都会读这个文件。最后更新：2026-10-31（加了"主屏幕和推送方案"）。
+> Claude Code 每次在这个文件夹启动都会读这个文件。最后更新：2026-10-31 晚（今天到此暂停，**明天从"明天从这里开始"那一节接着做**）。
 
 ## 工作规则（必须遵守）
 
@@ -44,6 +44,14 @@
 - 发送时设 `Urgency: high` 和较短的 TTL（比如 10 分钟），过时的提醒不会很晚才到。
 - 专注模式、勿扰、低电量模式可能让通知延迟或不响，所以**公告同时显示在网页上**，推送只是补充。
 
+## 部署（2026-10-31 已上线）
+
+- 网址：**https://fiu-icpc-hub.vercel.app**（个人页例如 `/lingtong-meng`）
+- Vercel 项目 `fiu-icpc-hub`（`prj_e0RCH0Q4xndq8HDu8A0mAiuHnmuv`），团队 `lingtong-mengs-projects`，Node 24。
+- 连着 GitHub 仓库 `mlt0727/FIU-ICPC-Hub`，**push 到 `main` 就会自动部署到正式网址**。
+- 环境变量：`DATABASE_URL`（加密）、`EVENT_DATE`、`EVENT_TZ`，三个环境都填了。
+- 访问保护：设成只保护预览部署和单次部署网址，**正式网址 `fiu-icpc-hub.vercel.app` 对所有人公开**。Vercel 新建项目默认会给整个网站加登录，那样志愿者打不开，所以改掉了。
+
 ## 技术选型（已确定）
 
 - **Next.js + TypeScript**，不用 Python。
@@ -54,10 +62,42 @@
 
 ## 计划和进度
 
-1. ✅ **数据库 + Excel 导入**：5 张表已建好，数据已导入（48 人、15 种任务、162 个时段，没有任何警告）。
-2. 🟡 **志愿者页面 + 管理页**：设计系统已定。Next.js 16 骨架、个人页、通用首页、cookie、每人自己的 manifest、图标都已完成（讲解见 `docs/step-2-explained.md`）。**还没做**：部署后用真 iPhone 测试、管理页。
-3. ⬜ **参赛者页面 + 部署到 Vercel**（新项目）。
-4. ⬜ **推送通知**：PWA manifest、service worker、web-push、VAPID 密钥，任务前提醒和公告。最后在安卓和 iPhone 上实测。
+1. ✅ **数据库 + Excel 导入**：5 张表已建好，数据已导入（48 人、15 种任务、162 个时段，没有任何警告）。另外加了 Lingtong 的测试数据和新任务 Breakfast Setup（见 `db/test-lingtong.sql`）。
+2. 🟡 **志愿者页面 + 管理页**
+   - ✅ 设计系统（`design-system/icpc-checkpoint/MASTER.md`）。
+   - ✅ Next.js 16 网站：个人页、通用首页、cookie 记住身份、名字打错的 404 页、每人自己的 manifest、主屏幕图标。讲解见 `docs/step-2-explained.md`。
+   - ✅ 已部署到 https://fiu-icpc-hub.vercel.app 。
+   - ✅ **真 iPhone 测试通过**：添加到主屏幕后点开，仍然认得出是 Lingtong。
+   - ✅ 根据 iPhone 测试改了三处：
+     - 顶部留白加大（第一行原来贴在状态栏下面，被模糊盖住）。
+     - 志愿者页面顶部那行改成 `ICPC Volunteer · Sat, Nov 7`。
+     - 志愿者添加到主屏幕后，图标下面的名字从 "ICPC" 改成 **"ICPC Volunteer"**（`lib/manifest.ts` 里的 `VOLUNTEER_APP_NAME`）。
+
+     **本地已改好、build 通过，等 Lingtong 提交、push 后上线。** 上线后要**删掉旧图标重新添加**，名字才会更新。还要看一眼 "ICPC Volunteer" 在主屏幕上会不会被截断成 "ICPC Volunte…"；如果会，换成短一点的名字。
+   - ⬜ **管理页**（还没开始）。
+3. ⬜ **参赛者页面**：首页现在只有一个占位卡片。部署已经搞定，这一步只剩做内容。
+4. ⬜ **推送通知**：service worker、web-push、VAPID 密钥、订阅按钮、任务前提醒（cron-job.org）、公告推送。最后在安卓和 iPhone 上实测。
+
+## 明天从这里开始（建议顺序）
+
+1. **确认今天的三处修改已经上线**：Lingtong push 以后，在 iPhone 上删掉旧图标重新添加，检查三件事：名字是不是 "ICPC Volunteer"、有没有被截断、顶部是否还贴着状态栏。
+2. **推送通知（最重要、风险最大，先做）**：
+   - 生成 VAPID 密钥，放进 Vercel 环境变量。
+   - 写 service worker（`public/sw.js`）：收到推送就显示通知，点通知打开这个人的页面。
+   - 个人页加 "Turn on notifications" 按钮。iPhone 只能在主屏幕 app 里点这个按钮，按钮要提示用户先添加到主屏幕。
+   - 订阅信息存进 `push_subscriptions`（带上 `volunteer_id`）。
+   - 先做一个"给自己发一条测试通知"的方式，iPhone 和安卓都测通，再做下面两项。
+   - 任务前提醒：受保护的 `/api/cron/reminders` 接口，cron-job.org 每分钟调一次。还要决定提前几分钟提醒（建议 10 分钟），并防止重复发送。
+   - 发送时设 `Urgency: high`，TTL 设短一点。
+3. **管理页**（带密码，密码放在 Vercel 环境变量）：
+   - 改任务的地点和说明（填好以后卡片上就不再显示 "Location coming soon"）。
+   - 改某个人的时段。
+   - 发公告：存进 `announcements` 表，同时推送；网页上也显示最新公告。
+4. **参赛者页面**：时间表、地图、餐厅和回来的路线，等 Lingtong 给素材。
+5. **比赛前收尾**：
+   - 写给志愿者的"添加到主屏幕并打开通知"说明（英文）。
+   - 决定要不要删掉 Lingtong 的测试数据（`delete from volunteers where slug = 'lingtong-meng';`），Breakfast Setup 这个任务要不要留。
+   - 用几个真实志愿者的链接抽查一遍。
 
 ## 现有文件
 
@@ -88,20 +128,25 @@
 
 ## 本地运行
 
-2026-10-31 已经在 Lingtong 电脑上做好：`npm install`、`.env.local`（已填 Neon 连接串）、`git init`（分支 `main`，还没有提交）。从这台电脑可以直接连 Neon。
+Lingtong 电脑上已经做好：`npm install`、`.env.local`（已填 Neon 连接串）、git 仓库（已推到 GitHub `mlt0727/FIU-ICPC-Hub`）。从这台电脑可以直接连 Neon。
 
 ```bash
+npm run dev                  # 本地网站：http://localhost:3000/lingtong-meng
+npm run build                # 和 Vercel 一样的打包检查
+npm run typecheck
+# 新电脑才需要：
 npm install
 cp .env.example .env.local   # 填 DATABASE_URL：Neon 控制台 → academy → icpc_day → Connect
-npm run typecheck
 # 数据库里已经有数据了。只有 Excel 改了才需要重新导入：
 npm run db:import -- "Final Volunteer_Availability.xlsx" --reset
 ```
 
-## 还没决定 / 还没做
+## 还没决定 / 等 Lingtong 提供
 
-- 网站名字。
-- `task-details.json` 里的地点和说明。
-- 各任务类型的文档模板（Lingtong 提供）。
+- 网站正式名字：志愿者这边已经定为 "ICPC Volunteer"，页面顶部和主屏幕名字都是这个。参赛者首页和参赛者的主屏幕名字还是 "ICPC Checkpoint"，还没定。
+- 15 个任务的地点和说明（`task-details.json`，或者等管理页做好后在网页上填）。
+- 各任务类型的文档模板。
 - 参赛者内容：地图、餐厅路线、座位表的素材。
-- 管理页密码，以后放在 Vercel 环境变量里。
+- 管理页密码。
+- 任务开始前几分钟提醒（建议 10 分钟）。
+- 技术组卡片上写什么（现在写的是 "Tech team details will appear here."）。
