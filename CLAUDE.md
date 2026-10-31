@@ -140,6 +140,16 @@
    - 点 "Test run"，应该返回 `{"shifts":0,"sent":0}`。返回 401 就是密码没填对。
    - 只需要 11 月 7 日当天跑，可以在 cron-job.org 里设定日期，或者当天早上再打开。
 
+## 任务说明（instructions，2026-10-31 开始）
+
+- 草稿在 `docs/task-instructions-draft.md`：16 个任务，每个都有英文和中文。
+  - Registration 和 Balloon Running 来自 Lingtong 给的两份文件，只调整了格式。
+  - 其他 14 个（包括 Lingtong 让 Claude 写的 Print Running）是 Claude 的草稿，不确定的地方标了 `[?]`。文件最后列了 12 个要 Lingtong 回答的问题。
+- **网站上只显示英文**，中文只给 Lingtong 审阅用。
+- ✅ **Registration 和 Balloon Running 的说明已放进数据库**（原文在 `data/instructions/*.md`）。卡片上有 "Instructions" 下拉框，点开才显示，不影响卡片本身。本地测过，等 push 后上线。讲解见 `docs/step-2-explained.md` 最后一节。
+- ⏸ **其他任务的说明先不放**：Lingtong 要跟其他人对过之后再定。加的时候：在 `data/instructions/` 里新建文件，在 `task-details.json` 里加 `instructionsFile`，然后运行 `npm run db:details`；或者直接在管理页填。
+- Registration 原文学生文件夹的颜色是 "[color]"，网站上暂时没写颜色。
+
 ## 发链接之前
 
 - 名字不用再改（Lingtong 确认：只要不重复就行，现在的链接都是唯一的）。**链接发出去以后就不要改名**，改名会让链接失效。
@@ -154,7 +164,7 @@
 5. **主页面补完**：加座位表（Lingtong 之后会给素材）。
 6. **比赛前收尾**：
    - 写给志愿者的"添加到主屏幕并打开通知"说明（英文）。
-   - 决定要不要删掉 Lingtong 的测试数据（`delete from volunteers where slug = 'lingtong-meng';`），Breakfast Setup 这个任务要不要留。
+   - ✅ Lingtong 的账号 `lingtong-meng` 保留，不删（Lingtong 2026-10-31 决定）。Breakfast Setup 任务也保留。
    - 用几个真实志愿者的链接抽查一遍。
 
 ## 现有文件
@@ -169,6 +179,8 @@
 | `scripts/apply-task-details.ts` | `npm run db:details`，把 task-details.json 写进数据库，可以重复运行 |
 | `docs/step-3-explained.md` | 第 3 步（主页面）的中文逐文件讲解 |
 | `data/event-schedule.json`、`lib/event.ts`、`components/volunteer-nav.tsx` | 主页面时间表和志愿者标签，见第 3 步讲解 |
+| `data/instructions/*.md`、`lib/instructions.ts`、`components/instructions.tsx` | 任务说明和它的显示 |
+| `scripts/check-instructions.ts` | 说明格式解析的自测：`npx tsx scripts/check-instructions.ts` |
 | `scripts/check-time.ts` | 时间换算的自测：`npx tsx scripts/check-time.ts` |
 | `docs/admin-explained.md` | 管理页的中文逐文件讲解 |
 | `app/admin/overview/page.tsx` | `/admin/overview`：全部数据，按任务和按人两种排法 |

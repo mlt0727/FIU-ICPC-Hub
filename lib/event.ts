@@ -15,6 +15,7 @@ export function eventCards(): Card[] {
     return {
       task: item.title,
       location: item.location,
+      instructions: null,
       rooms: roomsIn(item.location),
       mapsUrl: mapsLinkFor(item.location),
       startsAt,

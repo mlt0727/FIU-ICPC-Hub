@@ -409,3 +409,41 @@ main a {
 .muted {
   color: var(--text-2);
 }
+
+/* Instructions inside a task card (components/instructions.tsx) */
+.instructions {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+  padding: 2px 0 6px;
+}
+.instructions h3 {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--now);
+  margin: 14px 0 4px;
+}
+.instructions h3:first-child {
+  margin-top: 0;
+}
+.instructions p {
+  margin: 0 0 8px;
+  color: var(--text-2);
+}
+.instructions ol,
+.instructions ul {
+  margin: 0 0 6px;
+  padding-left: 20px;
+}
+.instructions li {
+  margin-bottom: 6px;
+}
+.instructions strong {
+  font-weight: 500;
+  color: var(--now);
+}
+/* Finished cards keep readable instructions, just dimmer */
+.card.done .instructions,
+.card.done .instructions p {
+  color: var(--text-done);
+}

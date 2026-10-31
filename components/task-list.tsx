@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Instructions } from "./instructions";
 import { RoomMap } from "./room-map";
 
 // One card per task. Runs in the browser so the "Now" outline moves on its own as time passes.
@@ -9,6 +10,7 @@ import { RoomMap } from "./room-map";
 export type Card = {
   task: string;
   location: string | null;
+  instructions: string | null; // shown in an "Instructions" dropdown when there are any
   rooms: string[];
   mapsUrl: string | null;
   startsAt: string;
@@ -45,6 +47,12 @@ export function TaskList({ cards, serverNow, frozen }: { cards: Card[]; serverNo
               <PinIcon />
               {c.location ?? "Location coming soon"}
             </p>
+            {c.instructions && (
+              <details className="card-map">
+                <summary>Instructions</summary>
+                <Instructions text={c.instructions} />
+              </details>
+            )}
             {c.rooms.length > 0 && (
               // <details> opens and closes by itself in the browser: no extra code, works with keyboard and screen readers.
               <details className="card-map">

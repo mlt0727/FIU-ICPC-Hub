@@ -82,7 +82,7 @@ export async function deleteAnnouncement(form: FormData) {
 export async function saveTask(form: FormData) {
   await requireAdmin();
   const location = text(form, "location").slice(0, 200);
-  const instructions = text(form, "instructions").slice(0, 2000);
+  const instructions = text(form, "instructions").slice(0, 4000);
   await sql`
     update tasks set location = ${location || null}, instructions = ${instructions || null}
     where id = ${id(form, "id")}`;

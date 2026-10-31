@@ -169,3 +169,34 @@ Lingtong 反馈原来的高亮不够明显，所以现在地图分三层：
 3. **名字牌**：每个要去的地方放一个琥珀色的圆角牌子，上面写 `105`、`Lobby`、`Spot 2`。不靠颜色也能一眼认出是哪里。牌子的位置是 `lib/rooms.ts` 里每个地点的 `pin`。106 是 L 形，它的牌子放在下半部分，避免落进 105 里。
 
 地图下方的文字也改成了 "Go to **Room 105**"，房间名加粗。
+
+## 任务说明（"Instructions" 下拉框）
+
+| 文件 | 作用 |
+|---|---|
+| `data/instructions/registration.md`、`data/instructions/balloon-running.md` | 两份说明的英文原文。网站上只放英文 |
+| `data/task-details.json` | 这两个任务多了 `instructionsFile`，指向上面两个文件 |
+| `scripts/apply-task-details.ts` | `npm run db:details` 会读这些文件，写进 `tasks.instructions` |
+| `lib/instructions.ts` | 把说明文字拆成标题、编号步骤、圆点、普通段落；`**加粗**` 也能识别 |
+| `scripts/check-instructions.ts` | 上面这个的自测 |
+| `components/instructions.tsx` | 把拆好的内容显示出来 |
+| `components/task-list.tsx` | 卡片上加 "Instructions" 下拉框，在 "Show on map" 上面 |
+| `lib/schedule.ts` | 查询时多取 `t.instructions` |
+| `app/admin/page.tsx`、`app/admin/actions.ts` | 管理页的说明输入框变大，最多 4000 字 |
+
+**写说明的格式**（文件里或者管理页的输入框里都一样）：
+- `## 标题` → 琥珀色小标题
+- `1. 步骤` → 编号列表
+- `- 要点` → 圆点列表
+- `**重要的字**` → 琥珀色加粗
+- 其他行 → 普通段落；空行只是用来分隔
+
+**安全**：说明文字只当文字显示，不会变成网页代码。就算有人在管理页输入 `<script>`，页面上也只会原样显示这几个字符。
+
+**改说明的两种方式**：
+1. 改 `data/instructions/` 里的文件，然后运行 `npm run db:details`。
+2. 在管理页 "Task locations" 里对应任务的 Instructions 框里直接改，点 Save。
+
+注意：再运行 `npm run db:details` 时，文件里的内容会覆盖管理页改过的内容。
+
+只有 Registration 和 Balloon Running 有说明，其他任务的卡片上没有 "Instructions"，等 Lingtong 和其他人确认后再加。草稿在 `docs/task-instructions-draft.md`。

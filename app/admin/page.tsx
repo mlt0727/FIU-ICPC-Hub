@@ -68,7 +68,7 @@ export default async function AdminPage() {
               </label>
               <label className="field">
                 Instructions
-                <textarea name="instructions" defaultValue={t.instructions ?? ""} rows={2} maxLength={2000} />
+                <textarea name="instructions" defaultValue={t.instructions ?? ""} rows={t.instructions ? 8 : 2} maxLength={4000} />
               </label>
               <SubmitButton quiet>Save</SubmitButton>
             </form>

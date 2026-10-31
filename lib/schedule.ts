@@ -1,7 +1,7 @@
 import { sql } from "./db";
 
 // Everything one volunteer's page needs, read from the database in two queries.
-export type Shift = { task: string; location: string | null; startsAt: string; endsAt: string };
+export type Shift = { task: string; location: string | null; instructions: string | null; startsAt: string; endsAt: string };
 export type Volunteer = {
   slug: string;
   name: string;
@@ -20,7 +20,7 @@ export async function getVolunteer(slug: string): Promise<Volunteer | null> {
   if (!v) return null;
 
   const rows = await sql`
-    select t.name as task, coalesce(s.location, t.location) as location, s.starts_at, s.ends_at
+    select t.name as task, coalesce(s.location, t.location) as location, t.instructions, s.starts_at, s.ends_at
     from shifts s join tasks t on t.id = s.task_id
     where s.volunteer_id = ${v.id}
     order by s.starts_at`;
@@ -34,6 +34,7 @@ export async function getVolunteer(slug: string): Promise<Volunteer | null> {
     shifts: rows.map((r) => ({
       task: r.task,
       location: r.location,
+      instructions: r.instructions,
       startsAt: iso(r.starts_at)!,
       endsAt: iso(r.ends_at)!,
     })),

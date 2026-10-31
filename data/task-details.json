@@ -5,7 +5,8 @@
   },
   "Registration": {
     "location": "PG6 Lobby",
-    "instructions": ""
+    "instructions": "",
+    "instructionsFile": "instructions/registration.md"
   },
   "Photography": {
     "location": "PG6",
@@ -74,7 +75,8 @@
   },
   "Balloon Running": {
     "location": "PG6 106",
-    "instructions": ""
+    "instructions": "",
+    "instructionsFile": "instructions/balloon-running.md"
   },
   "Proctors": {
     "location": "PG6 116",

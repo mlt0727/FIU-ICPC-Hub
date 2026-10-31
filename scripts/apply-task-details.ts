@@ -6,10 +6,19 @@
 //   "Print Running": { "location": "Room 105 or 106", "byPerson": { "Room 105": ["Name", ...], "Room 106": [...] } }
 // Names must match the roster exactly. Run this again after `npm run db:import -- ... --reset`,
 // because the import recreates all shifts.
+//
+// Long instructions live in their own file instead of one long JSON string:
+//   "Registration": { "instructionsFile": "instructions/registration.md" }   (path inside data/)
+// The file uses a tiny format the cards understand: "## Heading", "1. step", "- point", **bold**.
 import { readFile } from "node:fs/promises";
 import { sql } from "../lib/db";
 
-type TaskDetail = { location?: string; instructions?: string; byPerson?: Record<string, string[]> };
+type TaskDetail = {
+  location?: string;
+  instructions?: string;
+  instructionsFile?: string;
+  byPerson?: Record<string, string[]>;
+};
 const details: Record<string, TaskDetail> = JSON.parse(
   await readFile(new URL("../data/task-details.json", import.meta.url), "utf8"),
 );
@@ -23,6 +32,9 @@ for (const [name, d] of Object.entries(details)) {
   if (!knownTasks.has(name)) {
     console.warn(`Skipped "${name}": no task with this exact name in the database.`);
     continue;
+  }
+  if (d.instructionsFile) {
+    d.instructions = (await readFile(new URL(`../data/${d.instructionsFile}`, import.meta.url), "utf8")).trim();
   }
   if (d.location || d.instructions) {
     await sql`
