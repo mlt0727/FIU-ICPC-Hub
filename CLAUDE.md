@@ -89,7 +89,8 @@
      - **原因**：3 个环境变量没有填到 Vercel，线上页面拿到的公钥是空的，手机直接拒绝了订阅。
      - 已加保护：没有公钥时改为显示 "Reminders aren't available yet."；出错时会在浏览器控制台打印原因。
    - ✅ **Lingtong 填好密钥后再测：iPhone 能开通知，测试通知也能收到。**
-   - ⬜ 设置 cron-job.org（见下面"上线推送通知"第 4 条），不然任务前提醒不会发。
+   - ✅ cron-job.org 已设置（Lingtong 的账号，每分钟调用一次 `/api/cron/reminders`）。Test run 返回 200 和 `{"shifts":0,"sent":0}`。
+   - ✅ **任务前提醒全流程测通**（2026-10-31）：临时测试任务 3:26 PM 开始，提醒在 3:16:13 PM 发出，Lingtong 的 iPhone 收到了。测试任务已经删掉。
    - ⬜ 安卓测试。
    - ⬜ 公告推送（跟管理页一起做）。
 
@@ -132,7 +133,7 @@
 
 ## 接下来从这里开始（建议顺序）
 
-1. **设置 cron-job.org**（上面"上线推送通知"第 4 条），并用安卓测一次。
+1. **用安卓测一次**推送通知（iPhone 已经测通）。
 2. **请 Lingtong 确认地点分配**：Print Running 105/106 的分法、Directions 谁站哪个点（见上面"地点和地图"）。
 3. **换成真 logo**：Lingtong 提供 FIU 和 ICPC 的官方 logo 文件（最好是 SVG 或大尺寸透明 PNG），并确认 FIU 的品牌规范允许这样用。不要自己画、也不要从网上随便找。拿到以后放进 `public/`，改 `app/icons/[size]/route.tsx`：FIU logo 在上，ICPC logo 在下。图标最小只有 180px，两个 logo 都要在这么小的尺寸下还看得清。
 4. **管理页**（带密码，密码放在 Vercel 环境变量）：
