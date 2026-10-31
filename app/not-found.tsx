@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <>
-      <p className="eyebrow">ICPC Checkpoint</p>
+      <p className="eyebrow">FIU ICPC Hub</p>
       <h1>We couldn&apos;t find that page</h1>
       <p className="card-time">
         If this is your personal link, check the spelling with the organizers. <Link href="/" style={{ color: "var(--now)" }}>Go to the main page</Link>

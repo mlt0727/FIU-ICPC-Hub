@@ -5,6 +5,7 @@ import { Announcements } from "./announcements";
 import { AutoRefresh } from "./auto-refresh";
 import { NotifyButton } from "./notify-button";
 import { TaskList } from "./task-list";
+import { VolunteerNav } from "./volunteer-nav";
 
 // The volunteer part of a page: name and hours on top, then the task cards.
 // Used by both the personal page (/lingtong-meng) and the general page when the cookie says who you are.
@@ -14,6 +15,7 @@ export function VolunteerView({ volunteer: v, now }: { volunteer: Volunteer; now
 
   return (
     <section>
+      <VolunteerNav slug={v.slug} current="me" />
       <p className="eyebrow">ICPC Volunteer · {formatEventDay()}</p>
       <h1>{v.name}</h1>
       {v.arriveAt && v.leaveAt && (

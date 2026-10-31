@@ -18,7 +18,7 @@
 - **参赛者**：只用通用链接。可以看时间表、地图、总餐厅、从餐厅回来的路线、座位表（以后可能再加）。
 - **志愿者**：能看到参赛者的全部内容，另外还有自己的专属区域。
   - 专属链接是 `网站/名字`，例如 `/isabel-gonzalez-lopez`（全名、去掉重音、小写、用连字符）。别人能看到别人的也没关系。
-  - **记住身份**：志愿者打开一次专属链接后，用 cookie 记住他。以后打开通用链接也会显示他的名字和志愿者内容。参赛者看不到这些。
+  - **记住身份**：志愿者打开一次专属链接后，用 cookie 记住他。**（2026-10-31 改）** 主页面 `/` 对所有人都一样；志愿者在主页面顶部多一个 "My schedule" 标签，可以回到自己的页面。个人页上有 "Contest day" 标签，可以去主页面。参赛者看不到这两个标签。
   - 个人页顶部显示名字、到场时间、离场时间、总时长。下面每个任务一张卡片，写时间、地点、任务类型。**正在进行的任务卡片外面一圈高亮。**
   - 每种任务类型会有专门的文档模板，Lingtong 之后提供。
   - **技术组**（8 人）：只显示到场、离场、时长，再加技术组自己的内容，没有任务卡片。
@@ -84,7 +84,12 @@
      - 志愿者页面每分钟自动刷新。
    - ✅ 本地测过：登录、密码错误、没登录会被跳转、改时段再改回。**发公告没在本地测**，因为会真的推送给所有人。
    - ⬜ **Lingtong 要做的**：设 `ADMIN_PASSWORD`（`.env.local` 和 Vercel 都要填，Vercel 里选 Sensitive），push，再到线上 `/admin` 发一条测试公告，确认手机收到、页面顶部能看到，然后在管理页删掉这条公告。
-3. ⬜ **参赛者页面**：首页现在只有一个占位卡片。部署已经搞定，这一步只剩做内容。
+3. 🟡 **主页面 `/`（参赛者和所有人）**（讲解见 `docs/step-3-explained.md`）：本地做好、build 通过。
+   - 内容：当天时间表（Now / Next / Done，带地图）、PG6 总览地图、午饭（Graham Center 的 Google Maps 链接，以及走回 PG6 的步行路线）。
+   - 志愿者两个标签：My schedule 和 Contest day，本地测过可以来回切换。
+   - ✅ 时间表已经按 Lingtong 给的海报填好：Registration 10:00 → Orientation 11:00 → Practice contest 12:00–1:30 → Lunch 12:30–1:45（8th Street Campus Kitchen，Graham Center 里）→ Move to contest area 1:45 → Contest 2:00–7:00（全部在 116）→ Dinner 7:00–7:30 → Awards 7:30–8:00。112 是教练的位置。参赛者没有早餐；晚饭参赛者和志愿者都有。
+   - ✅ Lingtong 确认：参赛者 Orientation 在 116，Dinner 和 Awards 在 Lobby。
+   - ⬜ 座位表（等素材）。
 4. 🟡 **推送通知**（讲解见 `docs/step-4-explained.md`）
    - ✅ 本地写好、build 通过：
      - "Turn on reminders" 按钮：iPhone 在 Safari 里打开时，会提示先添加到主屏幕。
@@ -144,7 +149,7 @@
 2. **请 Lingtong 确认地点分配**：Print Running 105/106 的分法、Directions 谁站哪个点（见上面"地点和地图"）。
 3. **换成真 logo**：Lingtong 提供 FIU 和 ICPC 的官方 logo 文件（最好是 SVG 或大尺寸透明 PNG），并确认 FIU 的品牌规范允许这样用。不要自己画、也不要从网上随便找。拿到以后放进 `public/`，改 `app/icons/[size]/route.tsx`：FIU logo 在上，ICPC logo 在下。图标最小只有 180px，两个 logo 都要在这么小的尺寸下还看得清。
 4. **管理页上线**：Lingtong 设好 `ADMIN_PASSWORD` 并 push 后，在线上测一次发公告。以后可能要加：在管理页改志愿者的到场 / 离场时间（现在还不能改）。
-5. **参赛者页面**：时间表、地图（可以复用 `components/room-map.tsx`）、餐厅和回来的路线，等 Lingtong 给素材。
+5. **主页面补完**：加座位表（等素材）。
 6. **比赛前收尾**：
    - 写给志愿者的"添加到主屏幕并打开通知"说明（英文）。
    - 决定要不要删掉 Lingtong 的测试数据（`delete from volunteers where slug = 'lingtong-meng';`），Breakfast Setup 这个任务要不要留。
@@ -160,6 +165,9 @@
 | `lib/db.ts` / `lib/slug.ts` | 数据库连接 / 名字转网址 |
 | `data/task-details.json` | **Lingtong 待填**：每个任务的地点和说明。填完运行 `npm run db:details` |
 | `scripts/apply-task-details.ts` | `npm run db:details`，把 task-details.json 写进数据库，可以重复运行 |
+| `docs/step-3-explained.md` | 第 3 步（主页面）的中文逐文件讲解 |
+| `data/event-schedule.json`、`lib/event.ts`、`components/volunteer-nav.tsx` | 主页面时间表和志愿者标签，见第 3 步讲解 |
+| `scripts/check-time.ts` | 时间换算的自测：`npx tsx scripts/check-time.ts` |
 | `docs/admin-explained.md` | 管理页的中文逐文件讲解 |
 | `app/admin/`、`lib/admin-auth.ts`、`components/admin-forms.tsx`、`components/announcements.tsx`、`components/auto-refresh.tsx` | 管理页和公告，见管理页讲解 |
 | `docs/step-4-explained.md` | 第 4 步（推送通知）的中文逐文件讲解 |
@@ -183,7 +191,8 @@
 - 数据来源是 `Final Volunteer_Availability.xlsx`，以 "Volunteers by Task" 表为准。`.gitignore` 排除了所有 xlsx，名单不进 git。
 - **Orientation 11:00–12:00** 是全员活动，这个时间段没人干活。12:00 前到场的普通志愿者参加（24 人），之后才到的不用参加。`kind = 'meeting'`。
 - Shirina **8:00** 到场（表格里写错了），Lyna 的 Move people into 116 是 **10:00–11:00**。这两条写在 `corrections.json` 里，没有改 Excel。
-- Lunch 和 Dinner 是 `kind = 'break'`，其他任务是 `duty`。
+- Lunch 是 `kind = 'break'`，其他任务是 `duty`。
+- **Excel 里的 "DINNER" 其实是准备晚饭（set up dinner），不是吃晚饭**，所以网站上叫 **Dinner Setup**，`kind = 'duty'`。这个改名写在 `corrections.json` 的 `taskNames` 里，重新导入 Excel 时也会自动改。真正的晚饭是海报上的 7:00–7:30 PM，参赛者和志愿者都吃，显示在主页面的时间表里。
 - 时间存成 `timestamptz`。Excel 里的 "8:00" 等于 2026-11-07 纽约时间 8:00，也就是 UTC 13:00。
 
 ## 本地运行
@@ -210,5 +219,5 @@ npm run db:import -- "Final Volunteer_Availability.xlsx" --reset
 - 参赛者内容：地图、餐厅路线、座位表的素材。
 - 管理页密码：由 Lingtong 自己定，填进 `.env.local` 和 Vercel 的 `ADMIN_PASSWORD`。Claude 看不到这个密码。
 - 任务开始前几分钟提醒：现在先用 10 分钟（`lib/time.ts` 的 `REMINDER_MINUTES`），Lingtong 想改再说。
-- 地图：PG6 平面图、Lobby、Directions 站位、Graham Center 的 Google Maps 链接都已经有了。参赛者页面还需要"从 Graham Center 走回 PG6"的路线（看要不要做）。
+- 地图：PG6 平面图、Lobby、Directions 站位、Graham Center 的 Google Maps 链接和走回 PG6 的步行路线都已经有了。
 - 技术组卡片上写什么（现在写的是 "Tech team details will appear here."）。

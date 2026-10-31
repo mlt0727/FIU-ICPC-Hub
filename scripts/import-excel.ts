@@ -75,12 +75,15 @@ async function readJson<T>(path: string): Promise<T> {
 type Corrections = {
   arrive: Record<string, string>; // name -> correct arrive time
   shiftTimes: { name: string; task: string; from: string; to: string }[];
+  taskNames?: Record<string, string>; // name in the Excel file -> name shown on the site
 };
 const corrections = await readJson<Corrections>("../data/corrections.json");
 
 // "LUNCH" -> "Lunch"; names that are not all capitals are kept as written.
+// Then corrections.json may rename it: the Excel's "DINNER" volunteers set up dinner, they don't eat it.
 function taskName(raw: string): string {
-  return raw === raw.toUpperCase() ? raw[0] + raw.slice(1).toLowerCase() : raw;
+  const name = raw === raw.toUpperCase() ? raw[0] + raw.slice(1).toLowerCase() : raw;
+  return corrections.taskNames?.[name] ?? name;
 }
 
 const shifts: Shift[] = [];
@@ -172,7 +175,7 @@ if (problems.length) {
 
 type TaskDetail = { location?: string; instructions?: string };
 const details = await readJson<Record<string, TaskDetail>>("../data/task-details.json");
-const BREAKS = new Set(["Lunch", "Dinner"]);
+const BREAKS = new Set(["Lunch"]);
 const MEETINGS = new Set(allHands.map((e) => e.task));
 const kindOf = (name: string) => (BREAKS.has(name) ? "break" : MEETINGS.has(name) ? "meeting" : "duty");
 

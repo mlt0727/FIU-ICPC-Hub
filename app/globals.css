@@ -346,3 +346,30 @@ main a {
 .card > form + form {
   margin-top: 8px;
 }
+
+/* Volunteer tabs: "My schedule" / "Contest day" (components/volunteer-nav.tsx) */
+.volunteer-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+.volunteer-nav a {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-2);
+  text-decoration: none;
+}
+.volunteer-nav a[aria-current="page"] {
+  background: var(--now);
+  color: #0e1420;
+}

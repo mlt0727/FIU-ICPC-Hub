@@ -1,0 +1,10 @@
+[
+  { "title": "Registration", "start": "10:00", "end": "11:00", "location": "PG6 Lobby" },
+  { "title": "Orientation", "start": "11:00", "end": "12:00", "location": "PG6 116" },
+  { "title": "Practice contest", "start": "12:00", "end": "13:30", "location": "PG6 116" },
+  { "title": "Lunch", "start": "12:30", "end": "13:45", "location": "8th Street, Graham Center (GC)" },
+  { "title": "Move to the contest area", "start": "13:45", "end": "14:00", "location": "PG6 116" },
+  { "title": "Contest", "start": "14:00", "end": "19:00", "location": "PG6 116" },
+  { "title": "Dinner", "start": "19:00", "end": "19:30", "location": "PG6 Lobby" },
+  { "title": "Awards ceremony", "start": "19:30", "end": "20:00", "location": "PG6 Lobby" }
+]

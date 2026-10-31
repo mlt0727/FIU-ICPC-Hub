@@ -7,7 +7,8 @@ import { MAP, ROOMS } from "@/lib/rooms";
 //      so the target stays bright and everything else fades back;
 //   2. a thick outline around each highlighted place (dark line under an amber line);
 //   3. an amber name tag ("116", "Lobby", "Spot 2") on each place, readable even when the map is small.
-export function RoomMap({ highlight }: { highlight: string[] }) {
+// `caption` replaces the default "Go to Room 116" line (the main page uses it for an overview map).
+export function RoomMap({ highlight, caption }: { highlight: string[]; caption?: React.ReactNode }) {
   const rooms = ROOMS.filter((r) => highlight.includes(r.id));
   const { width: w, height: h } = MAP;
 
@@ -42,7 +43,12 @@ export function RoomMap({ highlight }: { highlight: string[] }) {
         </svg>
       </div>
       <figcaption>
-        Go to <strong>{rooms.map((r) => r.label).join(" or ")}</strong> · pinch to zoom
+        {caption ?? (
+          <>
+            Go to <strong>{rooms.map((r) => r.label).join(" or ")}</strong>
+          </>
+        )}{" "}
+        · pinch to zoom
       </figcaption>
     </figure>
   );

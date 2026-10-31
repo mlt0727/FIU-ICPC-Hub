@@ -7,7 +7,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "ICPC Checkpoint",
+  title: APP_NAME,
   description: "Schedule and info for ICPC contest day.",
   manifest: "/manifest", // volunteer pages replace this with their own manifest
   icons: { icon: "/icons/192", apple: "/icons/180" },

@@ -22,7 +22,7 @@ export const ROOMS: Room[] = [
   { id: "105", label: "Room 105", points: "722,425 1060,425 1060,642 930,645 930,668 722,668", pin: [880, 540] },
   // 106 is L-shaped; its pin sits in the lower part so it doesn't land in 105.
   { id: "106", label: "Room 106", points: "1060,425 1168,425 1168,815 722,815 722,672 930,672 930,648 1060,648", pin: [960, 745] },
-  { id: "Lobby", label: "Lobby", points: "12,20 205,20 205,668 12,668", pin: [108, 300] },
+  { id: "Lobby", label: "Lobby", points: "12,20 205,20 205,668 12,668", pin: [136, 300] },
   // Where the three Directions volunteers stand (circled by Lingtong on 2026-10-31).
   { id: "Spot 1", label: "Spot 1", points: oval(129, 784, 74, 43), pin: [129, 784], group: "Outside PG6" },
   { id: "Spot 2", label: "Spot 2", points: oval(882, 895, 93, 36), pin: [882, 895], group: "Outside PG6" },
@@ -45,9 +45,11 @@ export function roomsIn(location: string | null): string[] {
 }
 
 // Places that aren't on the floor plan get a Google Maps link instead.
-const EXTERNAL = [
-  { match: /graham center/i, url: "https://www.google.com/maps/search/?api=1&query=Graham+Center%2C+Florida+International+University" },
-];
+// Lunch is at 8th Street Campus Kitchen, the dining hall inside the Graham Center (GC).
+export const LUNCH_MAP_URL = "https://www.google.com/maps/search/?api=1&query=8th+Street+Campus+Kitchen%2C+Graham+Center%2C+FIU";
+export const WALK_BACK_URL =
+  "https://www.google.com/maps/dir/?api=1&origin=8th+Street+Campus+Kitchen%2C+Graham+Center%2C+FIU&destination=PG6+Tech+Station%2C+FIU&travelmode=walking";
+const EXTERNAL = [{ match: /graham center/i, url: LUNCH_MAP_URL }];
 
 export function mapsLinkFor(location: string | null): string | null {
   return EXTERNAL.find((p) => location && p.match.test(location))?.url ?? null;

@@ -87,3 +87,11 @@ npm run db:import -- "Final Volunteer_Availability.xlsx" --reset    # 以后再�
 ```
 
 > 说明：我这边的云端环境不允许直接连 Neon 的地址，所以这次是先让脚本**完整跑一遍、把它要发的 SQL 截下来**，再通过 Neon 的管理接口执行。脚本本身没有改动，你在自己电脑上可以直接跑。
+
+## 后来加的：任务改名（`corrections.json` 的 `taskNames`）
+
+Excel 里叫 "DINNER" 的任务，其实是准备晚饭的志愿者（6:00–7:00 PM），不是吃晚饭的时间。为了不让志愿者误会，网站上改名叫 **Dinner Setup**，类型也从 `break`（休息）改成 `duty`（干活）。
+
+- `corrections.json` 里加了 `"taskNames": { "Dinner": "Dinner Setup" }`，`import-excel.ts` 的 `taskName()` 在把 "DINNER" 变成 "Dinner" 之后，会再查一下这张表。
+- 现在只有 Lunch 算 `break`。
+- 数据库里已经直接改过名字，`task-details.json` 里的键也改成了 "Dinner Setup"。

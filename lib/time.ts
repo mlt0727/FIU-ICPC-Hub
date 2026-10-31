@@ -37,3 +37,19 @@ const clock24 = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-d
 export function toInputTime(isoTime: string): string {
   return clock24.format(new Date(isoTime));
 }
+
+// "08:00" on the event day in the event's time zone -> exact moment as ISO text.
+// Works out the zone's UTC offset for that day (EST on Nov 7, after daylight saving ends), same result as the SQL import.
+export function eventTimeIso(time: string): string {
+  const [y, mo, d] = (process.env.EVENT_DATE ?? "2026-11-07").split("-").map(Number);
+  const [h, mi] = time.split(":").map(Number);
+  const asUtc = Date.UTC(y, mo - 1, d, h, mi);
+  // What does the zone's clock read at that UTC moment? The difference is the offset.
+  const p = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", { timeZone: TZ, hourCycle: "h23", year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" })
+      .formatToParts(new Date(asUtc))
+      .map((x) => [x.type, Number(x.value)]),
+  );
+  const offset = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute) - asUtc;
+  return new Date(asUtc - offset).toISOString();
+}
