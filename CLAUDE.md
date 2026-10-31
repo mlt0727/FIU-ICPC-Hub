@@ -1,6 +1,6 @@
 # ICPC day website — 项目交接说明
 
-> Claude Code 每次在这个文件夹启动都会读这个文件。最后更新：2026-10-31（志愿者链接已导出；**下次从"接下来从这里开始"那一节接着做**）。
+> Claude Code 每次在这个文件夹启动都会读这个文件。最后更新：2026-10-31（主页面、管理页、推送都已上线；**下次从"接下来从这里开始"那一节接着做**）。
 
 ## 工作规则（必须遵守）
 
@@ -62,8 +62,8 @@
 
 ## 计划和进度
 
-1. ✅ **数据库 + Excel 导入**：5 张表已建好，数据已导入（48 人、15 种任务、162 个时段，没有任何警告）。另外加了 Lingtong 的测试数据和新任务 Breakfast Setup（见 `db/test-lingtong.sql`）。
-2. 🟡 **志愿者页面 + 管理页**
+1. ✅ **数据库 + Excel 导入**：5 张表已建好，数据已导入（48 人、15 种任务、162 个时段，没有任何警告）。另外加了 Lingtong 的测试数据和新任务 Breakfast Setup（见 `db/test-lingtong.sql`）。2026-10-31 又加了 **Talin Malki**（`/talin-malki`，Excel 里没有，见 `db/extra-volunteers.sql`）：Extra → Orientation → Lunch → Balloon Running → Dinner Setup → Awards → Event Break Down，时间照 Ahmed Mostafa 的。现在数据库共 50 人。
+2. ✅ **志愿者页面 + 管理页**（都已上线）
    - ✅ 设计系统（`design-system/icpc-checkpoint/MASTER.md`）。
    - ✅ Next.js 16 网站：个人页、通用首页、cookie 记住身份、名字打错的 404 页、每人自己的 manifest、主屏幕图标。讲解见 `docs/step-2-explained.md`。
    - ✅ 已部署到 https://fiu-icpc-hub.vercel.app 。
@@ -75,7 +75,7 @@
      - 主屏幕图标改成**临时的纯文字版**：深蓝底，上面是大号琥珀色 "FIU"，中间一条线，下面是 "ICPC"。
 
      **已经上线**（Lingtong 已 push）。Lingtong 认为主屏幕功能基本可以了。
-   - ✅ **所有志愿者的个人链接已导出**：`npm run links` → `volunteer-links.csv`（49 人，不进 git）。线上 49 个链接和 manifest 都检查过，全部正常。**还没发给志愿者**，发之前先看下面"发链接之前"。
+   - ✅ **所有志愿者的个人链接已导出**：`npm run links` → `volunteer-links.csv`（不进 git）。线上链接和 manifest 都检查过，全部正常。加了 Talin Malki 以后要再运行一次 `npm run links`（运行前先关掉在 Excel 里打开的 CSV，否则会报 EBUSY）。**还没发给志愿者**，发之前先看下面"发链接之前"。
    - ✅ **管理页 `/admin`**（讲解见 `docs/admin-explained.md`），本地写好、build 通过：
      - 密码登录（`ADMIN_PASSWORD`）。
      - 发公告：存进数据库、推送给所有开了通知的手机、显示在志愿者页面顶部。
@@ -83,14 +83,16 @@
      - 改某个人的时段：时间、个人地点、删除、新增。
      - 志愿者页面每分钟自动刷新。
    - ✅ 本地测过：登录、密码错误、没登录会被跳转、改时段再改回。**发公告没在本地测**，因为会真的推送给所有人。
-   - ⬜ **Lingtong 要做的**：设 `ADMIN_PASSWORD`（`.env.local` 和 Vercel 都要填，Vercel 里选 Sensitive），push，再到线上 `/admin` 发一条测试公告，确认手机收到、页面顶部能看到，然后在管理页删掉这条公告。
-3. 🟡 **主页面 `/`（参赛者和所有人）**（讲解见 `docs/step-3-explained.md`）：本地做好、build 通过。
+   - ✅ 已上线，`ADMIN_PASSWORD` 已设（线上 `/admin` 显示密码框）。
+   - ✅ Lingtong 在线上测过发公告，正常。
+   - ✅ 管理页第二轮（本地做好、build 通过，等 push）：在管理页加新志愿者、改到场 / 离场时间，以及新页面 `/admin/overview`（Volunteers by task、Tasks by volunteer，和 Excel 的表一样）。讲解见 `docs/admin-explained.md` 最后一节。
+3. ✅ **主页面 `/`（参赛者和所有人）**（讲解见 `docs/step-3-explained.md`）：已上线。
    - 内容：当天时间表（Now / Next / Done，带地图）、PG6 总览地图、午饭（Graham Center 的 Google Maps 链接，以及走回 PG6 的步行路线）。
    - 志愿者两个标签：My schedule 和 Contest day，本地测过可以来回切换。
    - ✅ 时间表已经按 Lingtong 给的海报填好：Registration 10:00 → Orientation 11:00 → Practice contest 12:00–1:30 → Lunch 12:30–1:45（8th Street Campus Kitchen，Graham Center 里）→ Move to contest area 1:45 → Contest 2:00–7:00（全部在 116）→ Dinner 7:00–7:30 → Awards 7:30–8:00。112 是教练的位置。参赛者没有早餐；晚饭参赛者和志愿者都有。
    - ✅ Lingtong 确认：参赛者 Orientation 在 116，Dinner 和 Awards 在 Lobby。
    - ⬜ 座位表（等素材）。
-4. 🟡 **推送通知**（讲解见 `docs/step-4-explained.md`）
+4. ✅ **推送通知**（讲解见 `docs/step-4-explained.md`）
    - ✅ 本地写好、build 通过：
      - "Turn on reminders" 按钮：iPhone 在 Safari 里打开时，会提示先添加到主屏幕。
      - `public/sw.js`、保存订阅、"Send a test notification"。
@@ -103,8 +105,8 @@
    - ✅ **Lingtong 填好密钥后再测：iPhone 能开通知，测试通知也能收到。**
    - ✅ cron-job.org 已设置（Lingtong 的账号，每分钟调用一次 `/api/cron/reminders`）。Test run 返回 200 和 `{"shifts":0,"sent":0}`。
    - ✅ **任务前提醒全流程测通**（2026-10-31）：临时测试任务 3:26 PM 开始，提醒在 3:16:13 PM 发出，Lingtong 的 iPhone 收到了。测试任务已经删掉。
-   - ⬜ 安卓测试。
-   - ✅ 公告推送已做（在管理页里），等线上测试。
+   - ⏸ 安卓测试（Lingtong 说暂时不做）。
+   - ✅ 公告推送已做（在管理页里）。
 
 ## 地点和地图（2026-10-31 做的，讲解见 `docs/step-2-explained.md` 最后一节）
 
@@ -113,7 +115,7 @@
 - **地图**：`public/pg6-map.webp`（Lingtong 给的平面图，已标出 Lobby）。地图上能高亮的地方：116、112、105、106、Lobby，以及 Directions 的 Spot 1/2/3（都在 `lib/rooms.ts` 里）。卡片上的地点文字提到这些地方，就会显示 "Show on map"，点开后高亮。括号里的文字只是描述，不参与匹配。
 - **Graham Center**（Lunch）不在平面图上，卡片显示 "Open in Google Maps ↗"。
 - **按人分配地点**：`shifts.location` 列，加上 `task-details.json` 里的 `byPerson`。已经分好：
-  - **Print Running**：Lingtong 让 Claude 自己分，Claude 按名字字母顺序分的。
+  - **Print Running**：Lingtong 让 Claude 自己分，Claude 按名字字母顺序分的。**Lingtong 已同意这个分法。**
     - 105：Muhammad Abuzar、Oliver Hernandez、Olivia Mason（比赛期间也在跑），以及 Fabiola Cagigas、Godwin Siyou Simo、Jonathan Gaspar（只做中午 12:00–1:00）。
     - 106：Pedro Remior、Subhash Gurappa、Yassine Mekdad（比赛期间也在跑），以及 Lyna Hamlaoui、Matthew Chavez-Alvarez、Muhammad Zain ul Abideen（只做中午）。
 
@@ -145,11 +147,11 @@
 
 ## 接下来从这里开始（建议顺序）
 
-1. **用安卓测一次**推送通知（iPhone 已经测通）。
-2. **请 Lingtong 确认地点分配**：Print Running 105/106 的分法、Directions 谁站哪个点（见上面"地点和地图"）。
-3. **换成真 logo**：Lingtong 提供 FIU 和 ICPC 的官方 logo 文件（最好是 SVG 或大尺寸透明 PNG），并确认 FIU 的品牌规范允许这样用。不要自己画、也不要从网上随便找。拿到以后放进 `public/`，改 `app/icons/[size]/route.tsx`：FIU logo 在上，ICPC logo 在下。图标最小只有 180px，两个 logo 都要在这么小的尺寸下还看得清。
-4. **管理页上线**：Lingtong 设好 `ADMIN_PASSWORD` 并 push 后，在线上测一次发公告。以后可能要加：在管理页改志愿者的到场 / 离场时间（现在还不能改）。
-5. **主页面补完**：加座位表（等素材）。
+1. **push 管理页第二轮**，在线上试一下加人和 All data 页面。
+2. Directions 谁站哪个点：Lingtong 还没说要换，先按现在的。
+3. ⏸ **换成真 logo**（Lingtong 说暂时不做）：Lingtong 提供 FIU 和 ICPC 的官方 logo 文件（最好是 SVG 或大尺寸透明 PNG），并确认 FIU 的品牌规范允许这样用。不要自己画、也不要从网上随便找。拿到以后放进 `public/`，改 `app/icons/[size]/route.tsx`：FIU logo 在上，ICPC logo 在下。图标最小只有 180px，两个 logo 都要在这么小的尺寸下还看得清。
+4. ✅ ~~管理页加人、改到场 / 离场~~（已做，见上面）。
+5. **主页面补完**：加座位表（Lingtong 之后会给素材）。
 6. **比赛前收尾**：
    - 写给志愿者的"添加到主屏幕并打开通知"说明（英文）。
    - 决定要不要删掉 Lingtong 的测试数据（`delete from volunteers where slug = 'lingtong-meng';`），Breakfast Setup 这个任务要不要留。
@@ -169,6 +171,7 @@
 | `data/event-schedule.json`、`lib/event.ts`、`components/volunteer-nav.tsx` | 主页面时间表和志愿者标签，见第 3 步讲解 |
 | `scripts/check-time.ts` | 时间换算的自测：`npx tsx scripts/check-time.ts` |
 | `docs/admin-explained.md` | 管理页的中文逐文件讲解 |
+| `app/admin/overview/page.tsx` | `/admin/overview`：全部数据，按任务和按人两种排法 |
 | `app/admin/`、`lib/admin-auth.ts`、`components/admin-forms.tsx`、`components/announcements.tsx`、`components/auto-refresh.tsx` | 管理页和公告，见管理页讲解 |
 | `docs/step-4-explained.md` | 第 4 步（推送通知）的中文逐文件讲解 |
 | `lib/push.ts`、`lib/push-subscription.ts`、`public/sw.js`、`components/notify-button.tsx`、`app/api/` | 推送通知，见第 4 步讲解 |
@@ -181,6 +184,7 @@
 | `docs/step-2-explained.md` | 第 2 步（志愿者页面）的中文逐文件讲解 |
 | `app/`、`components/`、`lib/schedule.ts`、`lib/time.ts`、`lib/manifest.ts` | Next.js 网站本体，见第 2 步讲解 |
 | `scripts/export-links.ts` | `npm run links`，生成 `volunteer-links.csv`（每人的个人链接，不进 git） |
+| `db/extra-volunteers.sql` | Excel 之后才加的志愿者（目前只有 **Talin Malki**），`--reset` 重新导入后要再执行一次，或者直接把他加进 Excel |
 | `db/test-lingtong.sql` | Lingtong 自己的测试数据（Breakfast Setup → Orientation → Lunch → Proctors）。`--reset` 重新导入后要再执行一次；比赛前决定要不要删 |
 | `design-system/icpc-checkpoint/MASTER.md` | 设计规范 |
 

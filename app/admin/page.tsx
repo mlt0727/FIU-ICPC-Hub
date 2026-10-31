@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AnnouncementForm, LoginForm, SubmitButton } from "@/components/admin-forms";
+import { AddVolunteerForm, AnnouncementForm, LoginForm, SubmitButton } from "@/components/admin-forms";
 import { isAdmin } from "@/lib/admin-auth";
 import { sql } from "@/lib/db";
 import { formatTime } from "@/lib/time";
@@ -30,9 +30,12 @@ export default async function AdminPage() {
     <>
       <p className="eyebrow">FIU ICPC Hub</p>
       <h1>Admin</h1>
-      <form action={logout}>
-        <SubmitButton quiet>Log out</SubmitButton>
-      </form>
+      <div className="admin-top">
+        <Link href="/admin/overview">All data: by task and by volunteer →</Link>
+        <form action={logout}>
+          <SubmitButton quiet>Log out</SubmitButton>
+        </form>
+      </div>
 
       <h2 className="section-title">Announcement</h2>
       <p className="card-time">Shown at the top of every volunteer page, and sent as a notification to every phone with reminders on.</p>
@@ -83,6 +86,12 @@ export default async function AdminPage() {
           </li>
         ))}
       </ul>
+
+      <h2 className="section-title">Add a volunteer</h2>
+      <p className="card-time">
+        For people who aren&apos;t in the Excel file. Their link is made from the name; after adding, you can give them shifts.
+      </p>
+      <AddVolunteerForm />
     </>
   );
 }

@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { endAdminSession, passwordIsRight, requireAdmin, startAdminSession } from "@/lib/admin-auth";
 import { sql } from "@/lib/db";
 import { sendPush } from "@/lib/push";
+import { slugify } from "@/lib/slug";
 
 const EVENT_DATE = process.env.EVENT_DATE ?? "2026-11-07";
 const EVENT_TZ = process.env.EVENT_TZ ?? "America/New_York";
@@ -121,5 +122,43 @@ export async function addShift(form: FormData) {
   await sql`
     insert into shifts (volunteer_id, task_id, starts_at, ends_at)
     values (${id(form, "volunteer_id")}, ${id(form, "task_id")}, ${at(start)}, ${at(end)})`;
+  refresh();
+}
+
+// ---------- Volunteers ----------
+
+// Paths the site already uses: a volunteer with one of these as their link would be hidden behind them.
+const TAKEN = new Set(["admin", "api", "manifest", "icons", "overview"]);
+
+export type AddResult = { error: string } | null;
+
+// Adds a person who isn't in the Excel file. Their link is made from the name, like the import does.
+// On success it opens their admin page so shifts can be added right away.
+export async function addVolunteer(_prev: AddResult, form: FormData): Promise<AddResult> {
+  await requireAdmin();
+  const name = text(form, "name").slice(0, 100);
+  const team = text(form, "team") === "tech" ? "tech" : "general";
+  const arrive = text(form, "arrive");
+  const leave = text(form, "leave");
+  const slug = slugify(name);
+  if (!slug) return { error: "Enter a name." };
+  if (TAKEN.has(slug)) return { error: "That name can't be used as a link. Add a last name." };
+  if (!isTime(arrive) || !isTime(leave) || leave <= arrive) return { error: "Leave time must be after arrive time." };
+
+  const rows = await sql`
+    insert into volunteers (slug, name, team, arrive_at, leave_at)
+    values (${slug}, ${name}, ${team}, ${at(arrive)}, ${at(leave)})
+    on conflict (slug) do nothing
+    returning slug`;
+  if (rows.length === 0) return { error: `Someone already has the link /${slug}. Use a different spelling.` };
+  redirect(`/admin/${slug}`);
+}
+
+export async function saveHours(form: FormData) {
+  await requireAdmin();
+  const arrive = text(form, "arrive");
+  const leave = text(form, "leave");
+  if (!isTime(arrive) || !isTime(leave) || leave <= arrive) throw new Error("Bad times");
+  await sql`update volunteers set arrive_at = ${at(arrive)}, leave_at = ${at(leave)} where id = ${id(form, "id")}`;
   refresh();
 }

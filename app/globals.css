@@ -373,3 +373,39 @@ main a {
   background: var(--now);
   color: #0e1420;
 }
+
+/* Admin: overview tables (app/admin/overview/page.tsx) */
+.admin-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+/* A wide table scrolls sideways inside its box instead of making the whole page scroll. */
+.table-scroll {
+  overflow-x: auto;
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.admin-table th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.admin-table th,
+.admin-table td {
+  padding: 6px 8px 6px 0;
+  border-top: 1px solid var(--border);
+  vertical-align: top;
+}
+.admin-table .nowrap,
+.nowrap {
+  white-space: nowrap;
+}
+.muted {
+  color: var(--text-2);
+}

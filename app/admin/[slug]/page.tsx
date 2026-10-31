@@ -5,7 +5,7 @@ import { SubmitButton } from "@/components/admin-forms";
 import { isAdmin } from "@/lib/admin-auth";
 import { sql } from "@/lib/db";
 import { formatHours, formatTime, toInputTime } from "@/lib/time";
-import { addShift, deleteShift, saveShift } from "../actions";
+import { addShift, deleteShift, saveHours, saveShift } from "../actions";
 
 export const metadata: Metadata = { title: "Admin · FIU ICPC Hub", robots: { index: false } };
 
@@ -38,6 +38,24 @@ export default async function AdminVolunteerPage({ params }: { params: Promise<{
         · <Link href={`/${v.slug}`}>Open their page</Link>
       </p>
 
+      {/* Arrive / leave: the hours shown at the top of their page */}
+      <form action={saveHours} className="card admin-form">
+        <input type="hidden" name="id" value={v.id} />
+        <div className="field-row">
+          <label className="field">
+            Arrive
+            <input type="time" name="arrive" defaultValue={v.arrive_at ? toInputTime(iso(v.arrive_at)) : "08:00"} required />
+          </label>
+          <label className="field">
+            Leave
+            <input type="time" name="leave" defaultValue={v.leave_at ? toInputTime(iso(v.leave_at)) : "21:00"} required />
+          </label>
+        </div>
+        <SubmitButton quiet>Save hours</SubmitButton>
+      </form>
+
+      <h2 className="section-title">Shifts</h2>
+      {shifts.length === 0 && <p className="card-time">No shifts yet. Add one below.</p>}
       <ul className="cards">
         {shifts.map((s) => (
           <li key={s.id} className="card">

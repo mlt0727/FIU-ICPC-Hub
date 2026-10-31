@@ -74,3 +74,49 @@
 - 输错密码 → "Wrong password."；输对 → 进入管理页。
 - 把 Lingtong 的 Breakfast Setup 结束时间改成 10:30 → 数据库确实变了 → 改回 11:00 → 他的页面显示正确。
 - **没测发公告**：本地和线上用的是同一个数据库，一发就会真的推送到 Lingtong 的手机，并且出现在所有志愿者的页面上。所以留给 Lingtong 在线上自己测。
+
+## 第二轮：加人、改到场离场、查看全部数据
+
+| 文件 | 作用 |
+|---|---|
+| `app/admin/actions.ts` | 新增 `addVolunteer`（加人）和 `saveHours`（改到场 / 离场） |
+| `components/admin-forms.tsx` | 新增 `AddVolunteerForm`：加人的表单，能显示错误提示 |
+| `app/admin/page.tsx` | 顶部加了 "All data" 链接；最下面加了 "Add a volunteer" |
+| `app/admin/[slug]/page.tsx` | 最上面可以改这个人的 Arrive / Leave |
+| `app/admin/overview/page.tsx` | **新页面** `/admin/overview`：全部数据 |
+| `app/globals.css` | 表格样式 |
+
+### 加人（`addVolunteer`）
+
+- 填全名、组别（Volunteer / Tech team）、到场和离场时间。
+- 链接由名字自动生成，和 Excel 导入用的是同一个 `slugify`：`Talin Malki` → `/talin-malki`。
+- 以下情况不会加，表单下面会显示原因：
+  - 名字为空。
+  - 离场时间不晚于到场时间。
+  - 已经有人用了这个链接（`on conflict (slug) do nothing`，然后检查有没有插进去）。
+  - 名字变成链接后正好是网站已经用掉的路径：`admin`、`api`、`manifest`、`icons`、`overview`。
+- 加好以后直接跳到这个人的管理页，接着在 "Add a shift" 里给他加任务。
+- **和 Excel 的关系**：在管理页加的人不在 Excel 里。以后如果用 `--reset` 重新导入，**人还在**（导入只更新 Excel 里有的人），**但他的时段会被删掉**（导入会删掉所有时段）。所以比赛前尽量不要再 `--reset`；真要做的话，把这些人也加进 Excel。
+
+### 改到场 / 离场（`saveHours`）
+
+在 `/admin/某人` 最上面。改的是个人页顶部显示的 Arrive / Leave / Total，不影响任务时段。
+
+### 全部数据（`/admin/overview`）
+
+和 Excel 的两张表对应：
+- **Volunteers by task**：每个任务一张卡片，写着几个人；每一行是时间、名字，以及这个人自己的地点（如果有，比如 Print Running 的 105 / 106、Directions 的站位）。任务按当天第一次出现的时间排序。
+- **Tasks by volunteer**：每个人一张卡片，写到场 / 离场 / 总时长，下面是他一天的任务。技术组没有任务。
+
+最上面有总数（人数、任务数、时段数），以及跳到两张表的链接。点名字可以进入这个人的管理页修改。这个页面只能看，不能改；数据都是从数据库现读的，所以永远是最新的。
+
+两种排法用的是同一份数据：先一次查出所有时段（按开始时间排好），再用两个 `Map` 分别按任务、按人分组。`Map` 会保持放进去的顺序，所以分组后仍然按时间排列。
+
+一开始 "Tasks by volunteer" 做成了三列的大表格，在手机上太挤，后来改成和 "Volunteers by task" 一样的卡片。
+
+### 测过的（本地，临时密码 `localtest`）
+
+- 加一个已有的人（Talin Malki）→ 显示 "Someone already has the link /talin-malki."，数据库没有变化。
+- 加一个测试人 "Zzz Test Person" → 跳到 `/admin/zzz-test-person` → 离场改成 19:00 → 页面显示 "8:00 AM – 7:00 PM · 11 hours" → 测完已经从数据库删掉。
+- 没登录打开 `/admin/overview` → 跳回 `/admin`。
+- 手机宽度下 All data 页面没有横向滚动。
