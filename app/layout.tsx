@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { APP_NAME } from "@/lib/manifest";
 import "./globals.css";
 
 // next/font downloads Inter at build time and serves it from our own domain (no Google request from phones).
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   description: "Schedule and info for ICPC contest day.",
   manifest: "/manifest", // volunteer pages replace this with their own manifest
   icons: { icon: "/icons/192", apple: "/icons/180" },
-  appleWebApp: { capable: true, title: "ICPC Checkpoint", statusBarStyle: "black-translucent" },
+  appleWebApp: { capable: true, title: APP_NAME, statusBarStyle: "black-translucent" },
 };
 
 export const viewport: Viewport = {

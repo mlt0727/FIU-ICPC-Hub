@@ -71,16 +71,18 @@
    - ✅ 根据 iPhone 测试改了三处：
      - 顶部留白加大（第一行原来贴在状态栏下面，被模糊盖住）。
      - 志愿者页面顶部那行改成 `ICPC Volunteer · Sat, Nov 7`。
-     - 志愿者添加到主屏幕后，图标下面的名字从 "ICPC" 改成 **"ICPC Volunteer"**（`lib/manifest.ts` 里的 `VOLUNTEER_APP_NAME`）。
+     - 主屏幕图标下面的名字（志愿者和参赛者都一样）改成 **"FIU ICPC Hub"**，在 `lib/manifest.ts` 的 `APP_NAME`。
+     - 主屏幕图标改成**临时的纯文字版**：深蓝底，上面是大号琥珀色 "FIU"，中间一条线，下面是 "HSPC"。
 
-     **本地已改好、build 通过，等 Lingtong 提交、push 后上线。** 上线后要**删掉旧图标重新添加**，名字才会更新。还要看一眼 "ICPC Volunteer" 在主屏幕上会不会被截断成 "ICPC Volunte…"；如果会，换成短一点的名字。
+     **本地已改好、build 通过，等 Lingtong 提交、push 后上线。** 上线后要**删掉旧图标重新添加**，名字和图标才会更新。
    - ⬜ **管理页**（还没开始）。
 3. ⬜ **参赛者页面**：首页现在只有一个占位卡片。部署已经搞定，这一步只剩做内容。
 4. ⬜ **推送通知**：service worker、web-push、VAPID 密钥、订阅按钮、任务前提醒（cron-job.org）、公告推送。最后在安卓和 iPhone 上实测。
 
 ## 明天从这里开始（建议顺序）
 
-1. **确认今天的三处修改已经上线**：Lingtong push 以后，在 iPhone 上删掉旧图标重新添加，检查三件事：名字是不是 "ICPC Volunteer"、有没有被截断、顶部是否还贴着状态栏。
+1. **确认今天的修改已经上线**：Lingtong push 以后，在 iPhone 上删掉旧图标重新添加，检查三件事：名字是不是 "FIU ICPC Hub"、图标是不是新的、顶部是否还贴着状态栏。
+   - **换成真 logo**：Lingtong 提供 FIU 和 HSPC 的官方 logo 文件（最好是 SVG 或大尺寸透明 PNG），并确认 FIU 的品牌规范允许这样用。不要自己画、也不要从网上随便找。拿到以后放进 `public/`，改 `app/icons/[size]/route.tsx`：FIU logo 在上，HSPC logo 在下。图标最小只有 180px，两个 logo 都要在这么小的尺寸下还看得清。
 2. **推送通知（最重要、风险最大，先做）**：
    - 生成 VAPID 密钥，放进 Vercel 环境变量。
    - 写 service worker（`public/sw.js`）：收到推送就显示通知，点通知打开这个人的页面。
@@ -143,7 +145,8 @@ npm run db:import -- "Final Volunteer_Availability.xlsx" --reset
 
 ## 还没决定 / 等 Lingtong 提供
 
-- 网站正式名字：志愿者这边已经定为 "ICPC Volunteer"，页面顶部和主屏幕名字都是这个。参赛者首页和参赛者的主屏幕名字还是 "ICPC Checkpoint"，还没定。
+- 名字：主屏幕名字定为 **"FIU ICPC Hub"**；志愿者页面顶部那行写 "ICPC Volunteer"。参赛者首页顶部还写着 "ICPC Checkpoint"，网页标题（浏览器标签上的字）也还是 "ICPC Checkpoint"，要不要都改成 FIU ICPC Hub 还没定。
+- FIU 和 HSPC 的官方 logo 文件。
 - 15 个任务的地点和说明（`task-details.json`，或者等管理页做好后在网页上填）。
 - 各任务类型的文档模板。
 - 参赛者内容：地图、餐厅路线、座位表的素材。

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RememberMe } from "@/components/remember-me";
 import { VolunteerView } from "@/components/volunteer-view";
-import { volunteerMetadata } from "@/lib/manifest";
 import { getVolunteer } from "@/lib/schedule";
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ now?: string }> };
@@ -11,7 +10,7 @@ type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ now?: 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   // This person's own manifest: "Add to Home Screen" from here makes an icon that always opens this page.
-  return volunteerMetadata(slug);
+  return { manifest: `/manifest/${slug}` };
 }
 
 export default async function VolunteerPage({ params, searchParams }: Props) {
