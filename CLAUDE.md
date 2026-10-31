@@ -1,6 +1,6 @@
 # ICPC day website — 项目交接说明
 
-> Claude Code 每次在这个文件夹启动都会读这个文件。最后更新：2026-10-31 晚（今天到此暂停，**明天从"明天从这里开始"那一节接着做**）。
+> Claude Code 每次在这个文件夹启动都会读这个文件。最后更新：2026-10-31（志愿者链接已导出；**下次从"接下来从这里开始"那一节接着做**）。
 
 ## 工作规则（必须遵守）
 
@@ -49,7 +49,7 @@
 - 网址：**https://fiu-icpc-hub.vercel.app**（个人页例如 `/lingtong-meng`）
 - Vercel 项目 `fiu-icpc-hub`（`prj_e0RCH0Q4xndq8HDu8A0mAiuHnmuv`），团队 `lingtong-mengs-projects`，Node 24。
 - 连着 GitHub 仓库 `mlt0727/FIU-ICPC-Hub`，**push 到 `main` 就会自动部署到正式网址**。
-- 环境变量：`DATABASE_URL`（加密）、`EVENT_DATE`、`EVENT_TZ`，三个环境都填了。
+- 环境变量：`DATABASE_URL`（加密）、`EVENT_DATE`、`EVENT_TZ`，三个环境都填了。**推送用的 `VAPID_PUBLIC_KEY`、`VAPID_PRIVATE_KEY`、`CRON_SECRET` 还没填**（见"上线推送通知"）。
 - 访问保护：设成只保护预览部署和单次部署网址，**正式网址 `fiu-icpc-hub.vercel.app` 对所有人公开**。Vercel 新建项目默认会给整个网站加登录，那样志愿者打不开，所以改掉了。
 
 ## 技术选型（已确定）
@@ -74,29 +74,55 @@
      - 主屏幕图标下面的名字（志愿者和参赛者都一样）改成 **"FIU ICPC Hub"**，在 `lib/manifest.ts` 的 `APP_NAME`。
      - 主屏幕图标改成**临时的纯文字版**：深蓝底，上面是大号琥珀色 "FIU"，中间一条线，下面是 "ICPC"。
 
-     **本地已改好、build 通过，等 Lingtong 提交、push 后上线。** 上线后要**删掉旧图标重新添加**，名字和图标才会更新。
+     **已经上线**（Lingtong 已 push）。Lingtong 认为主屏幕功能基本可以了。
+   - ✅ **所有志愿者的个人链接已导出**：`npm run links` → `volunteer-links.csv`（49 人，不进 git）。线上 49 个链接和 manifest 都检查过，全部正常。**还没发给志愿者**，发之前先看下面"发链接之前"。
    - ⬜ **管理页**（还没开始）。
 3. ⬜ **参赛者页面**：首页现在只有一个占位卡片。部署已经搞定，这一步只剩做内容。
-4. ⬜ **推送通知**：service worker、web-push、VAPID 密钥、订阅按钮、任务前提醒（cron-job.org）、公告推送。最后在安卓和 iPhone 上实测。
+4. 🟡 **推送通知**（讲解见 `docs/step-4-explained.md`）
+   - ✅ 本地写好、build 通过：
+     - "Turn on reminders" 按钮：iPhone 在 Safari 里打开时，会提示先添加到主屏幕。
+     - `public/sw.js`、保存订阅、"Send a test notification"。
+     - 任务开始前 10 分钟自动提醒（`/api/cron/reminders`，同一个时段不会重复提醒）。
+   - ✅ 本地已检查：接口的密码校验和输入校验都正常；提醒的 SQL 用"假装比赛日 11:52"验证过，选出的时段是对的。
+   - ⬜ **Lingtong 要做的（按顺序）**：见下面"上线推送通知"。
+   - ⬜ 真机测试：iPhone 和安卓都要收到测试通知。
+   - ⬜ 公告推送（跟管理页一起做）。
 
-## 明天从这里开始（建议顺序）
+## 上线推送通知（Lingtong 要做的）
 
-1. **确认今天的修改已经上线**：Lingtong push 以后，在 iPhone 上删掉旧图标重新添加，检查三件事：名字是不是 "FIU ICPC Hub"、图标是不是新的、顶部是否还贴着状态栏。
-   - **换成真 logo**：Lingtong 提供 FIU 和 ICPC 的官方 logo 文件（最好是 SVG 或大尺寸透明 PNG），并确认 FIU 的品牌规范允许这样用。不要自己画、也不要从网上随便找。拿到以后放进 `public/`，改 `app/icons/[size]/route.tsx`：FIU logo 在上，ICPC logo 在下。图标最小只有 180px，两个 logo 都要在这么小的尺寸下还看得清。
-2. **推送通知（最重要、风险最大，先做）**：
-   - 生成 VAPID 密钥，放进 Vercel 环境变量。
-   - 写 service worker（`public/sw.js`）：收到推送就显示通知，点通知打开这个人的页面。
-   - 个人页加 "Turn on notifications" 按钮。iPhone 只能在主屏幕 app 里点这个按钮，按钮要提示用户先添加到主屏幕。
-   - 订阅信息存进 `push_subscriptions`（带上 `volunteer_id`）。
-   - 先做一个"给自己发一条测试通知"的方式，iPhone 和安卓都测通，再做下面两项。
-   - 任务前提醒：受保护的 `/api/cron/reminders` 接口，cron-job.org 每分钟调一次。还要决定提前几分钟提醒（建议 10 分钟），并防止重复发送。
-   - 发送时设 `Urgency: high`，TTL 设短一点。
-3. **管理页**（带密码，密码放在 Vercel 环境变量）：
+1. **把 3 个新环境变量填到 Vercel**：打开 Vercel → `fiu-icpc-hub` → Settings → Environment Variables，从 `.env.local` 最后三行复制，三个环境（Production / Preview / Development）都勾上：
+   - `VAPID_PUBLIC_KEY`
+   - `VAPID_PRIVATE_KEY`（选 Sensitive）
+   - `CRON_SECRET`（选 Sensitive）
+
+   Claude 不能读这些密钥，所以这一步要 Lingtong 自己做。**`.env.local` 里的 VAPID 密钥以后不要换**：换了以后，所有已经开通知的手机都收不到了。
+2. 提交并 push，Vercel 自动部署。**最好先做第 1 步再 push**；顺序反了也能部署成功，只是在填好密钥、重新部署之前，按钮会显示出错。
+3. 真机测试：从主屏幕打开 → Turn on reminders → 允许 → Send a test notification。
+4. **设置 cron-job.org**（免费，账号要 Lingtong 自己注册）：
+   - 新建 job，URL 填 `https://fiu-icpc-hub.vercel.app/api/cron/reminders`，频率选每分钟。
+   - 在 Advanced → Headers 里加一个请求头：名字 `Authorization`，值 `Bearer ` 加上 `CRON_SECRET` 的值（Bearer 后面有一个空格）。
+   - 点 "Test run"，应该返回 `{"shifts":0,"sent":0}`。返回 401 就是密码没填对。
+   - 只需要 11 月 7 日当天跑，可以在 cron-job.org 里设定日期，或者当天早上再打开。
+
+## 发链接之前
+
+- 名字不用再改（Lingtong 确认：只要不重复就行，现在的链接都是唯一的）。**链接发出去以后就不要改名**，改名会让链接失效。
+- 现在就可以发链接。以后网站更新，志愿者主屏幕上的图标会自动用上新版本，不用重新添加。
+
+## 接下来从这里开始（建议顺序）
+
+1. **上线推送通知**：按上面"上线推送通知"那一节做，真机测通。
+2. **换成真 logo**：Lingtong 提供 FIU 和 ICPC 的官方 logo 文件（最好是 SVG 或大尺寸透明 PNG），并确认 FIU 的品牌规范允许这样用。不要自己画、也不要从网上随便找。拿到以后放进 `public/`，改 `app/icons/[size]/route.tsx`：FIU logo 在上，ICPC logo 在下。图标最小只有 180px，两个 logo 都要在这么小的尺寸下还看得清。
+3. **填地点**：Lingtong 有空时填 `data/task-details.json` 的 `location`（和 `instructions`），然后运行 `npm run db:details`，网站马上生效，不用部署。
+   - 时间不用填，每个人的时间来自 Excel。
+   - 任务名不要改，要和数据库里一字不差。
+4. **地图功能（要记得加）**：Lingtong 的地图还没准备好。等有了地图，点卡片上的地点要能打开地图，并标出那个位置。可能的做法：一张场地图片加标记，或者每个地点配一个 Google Maps 链接，到时候看素材再定。参赛者页面也要用这张地图。
+5. **管理页**（带密码，密码放在 Vercel 环境变量）：
    - 改任务的地点和说明（填好以后卡片上就不再显示 "Location coming soon"）。
    - 改某个人的时段。
    - 发公告：存进 `announcements` 表，同时推送；网页上也显示最新公告。
-4. **参赛者页面**：时间表、地图、餐厅和回来的路线，等 Lingtong 给素材。
-5. **比赛前收尾**：
+6. **参赛者页面**：时间表、地图、餐厅和回来的路线，等 Lingtong 给素材。
+7. **比赛前收尾**：
    - 写给志愿者的"添加到主屏幕并打开通知"说明（英文）。
    - 决定要不要删掉 Lingtong 的测试数据（`delete from volunteers where slug = 'lingtong-meng';`），Breakfast Setup 这个任务要不要留。
    - 用几个真实志愿者的链接抽查一遍。
@@ -109,12 +135,17 @@
 | `scripts/migrate.ts` | `npm run db:migrate`，执行 schema.sql，可以重复运行 |
 | `scripts/import-excel.ts` | `npm run db:import -- "文件.xlsx" [--reset]`，读 Excel、检查数据、导入 |
 | `lib/db.ts` / `lib/slug.ts` | 数据库连接 / 名字转网址 |
-| `data/task-details.json` | **Lingtong 待填**：每个任务的地点和说明 |
+| `data/task-details.json` | **Lingtong 待填**：每个任务的地点和说明。填完运行 `npm run db:details` |
+| `scripts/apply-task-details.ts` | `npm run db:details`，把 task-details.json 写进数据库，可以重复运行 |
+| `docs/step-4-explained.md` | 第 4 步（推送通知）的中文逐文件讲解 |
+| `lib/push.ts`、`lib/push-subscription.ts`、`public/sw.js`、`components/notify-button.tsx`、`app/api/` | 推送通知，见第 4 步讲解 |
+| `scripts/check-push-subscription.ts` | 订阅数据检查的自测：`npx tsx scripts/check-push-subscription.ts` |
 | `data/corrections.json` | Excel 已知错误的修正 |
 | `data/all-hands.json` | Orientation 规则 |
 | `docs/step-1-explained.md` | 第 1 步的中文逐文件讲解 |
 | `docs/step-2-explained.md` | 第 2 步（志愿者页面）的中文逐文件讲解 |
 | `app/`、`components/`、`lib/schedule.ts`、`lib/time.ts`、`lib/manifest.ts` | Next.js 网站本体，见第 2 步讲解 |
+| `scripts/export-links.ts` | `npm run links`，生成 `volunteer-links.csv`（每人的个人链接，不进 git） |
 | `db/test-lingtong.sql` | Lingtong 自己的测试数据（Breakfast Setup → Orientation → Lunch → Proctors）。`--reset` 重新导入后要再执行一次；比赛前决定要不要删 |
 | `design-system/icpc-checkpoint/MASTER.md` | 设计规范 |
 
@@ -151,5 +182,6 @@ npm run db:import -- "Final Volunteer_Availability.xlsx" --reset
 - 各任务类型的文档模板。
 - 参赛者内容：地图、餐厅路线、座位表的素材。
 - 管理页密码。
-- 任务开始前几分钟提醒（建议 10 分钟）。
+- 任务开始前几分钟提醒：现在先用 10 分钟（`lib/time.ts` 的 `REMINDER_MINUTES`），Lingtong 想改再说。
+- 地图（地图功能要加，素材还没准备好）。
 - 技术组卡片上写什么（现在写的是 "Tech team details will appear here."）。

@@ -28,3 +28,6 @@ export function formatEventDay(): string {
   const day = new Date(`${process.env.EVENT_DATE ?? "2026-11-07"}T12:00:00Z`);
   return day.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" });
 }
+
+// How long before a task starts its reminder is sent. Shown in the page text too, so change it only here.
+export const REMINDER_MINUTES = 10;

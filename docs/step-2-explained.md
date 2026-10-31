@@ -102,3 +102,14 @@ npm run dev
 - 两个 manifest 的内容、图标
 
 **还没在真 iPhone 上测过**，因为要先部署到 https 的网址才能测。
+
+## 导出所有志愿者的链接：`scripts/export-links.ts`
+
+运行 `npm run links`，会在项目根目录生成 `volunteer-links.csv`，每个志愿者一行，五列：名字、组别（`general` / `tech`）、个人链接、到场、离场。可以直接用 Excel 打开，复制链接发给每个人。
+
+- 数据直接从数据库读，所以以后名单改了（重新导入 Excel 或在管理页改），再运行一次就是最新的。
+- 网址默认是 `https://fiu-icpc-hub.vercel.app`。以后换域名，在 `.env.local` 里加一行 `SITE_URL=新网址` 就行。
+- 每一格都加了双引号，名字里有逗号也不会被拆成两列。
+- 文件开头加了一个看不见的 BOM 字符（`﻿`），告诉 Excel "这是 UTF-8"。不加的话，`González` 在 Excel 里会变成乱码。
+- **这个 CSV 不进 git**（`.gitignore` 里加了 `volunteer-links.csv`），因为里面是名单，和 Excel 文件的规则一样。
+- 时间格式复用了 `lib/time.ts` 的 `formatTime`，和网页上显示的一模一样。

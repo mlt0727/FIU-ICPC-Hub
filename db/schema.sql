@@ -56,3 +56,6 @@ create table if not exists push_subscriptions (
   auth          text not null,
   created_at    timestamptz not null default now()
 );
+
+-- Step 4: when the "starts in 10 minutes" push was sent for this shift (null = not yet). Stops double reminders.
+alter table shifts add column if not exists reminder_sent_at timestamptz;

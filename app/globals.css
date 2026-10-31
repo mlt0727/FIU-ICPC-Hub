@@ -125,3 +125,54 @@ h1 {
   font-weight: 500;
   margin: 28px 0 0;
 }
+
+/* "Turn on reminders" box (components/notify-button.tsx) */
+.notify {
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--text-2);
+}
+.notify p {
+  margin: 0 0 10px;
+}
+.notify p:last-child {
+  margin-bottom: 0;
+}
+.notify strong {
+  color: var(--text);
+  font-weight: 500;
+}
+.notify-note {
+  margin-top: 8px !important;
+  font-size: 13px;
+}
+
+/* Main button: amber like the "Now" outline, dark text (about 9:1 contrast). At least 44px tall for thumbs. */
+.button,
+.button-quiet {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.button {
+  background: var(--now);
+  color: #0e1420;
+  border: none;
+}
+.button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.button-quiet {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}

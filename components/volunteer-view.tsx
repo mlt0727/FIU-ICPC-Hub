@@ -1,5 +1,6 @@
 import type { Volunteer } from "@/lib/schedule";
 import { formatEventDay, formatHours, formatRange, formatTime } from "@/lib/time";
+import { NotifyButton } from "./notify-button";
 import { TaskList } from "./task-list";
 
 // The volunteer part of a page: name and hours on top, then the task cards.
@@ -28,6 +29,8 @@ export function VolunteerView({ volunteer: v, now }: { volunteer: Volunteer; now
           </div>
         </dl>
       )}
+
+      <NotifyButton slug={v.slug} publicKey={process.env.VAPID_PUBLIC_KEY ?? ""} />
 
       {v.team === "tech" ? (
         <div className="card">
