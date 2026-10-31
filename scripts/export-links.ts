@@ -20,5 +20,14 @@ const lines = [
 ].map((cells) => cells.map(field).join(","));
 
 // "﻿" at the start tells Excel the file is UTF-8, so "González" doesn't turn into garbage.
-await writeFile("volunteer-links.csv", "﻿" + lines.join("\r\n") + "\r\n", "utf8");
+try {
+  await writeFile("volunteer-links.csv", "﻿" + lines.join("\r\n") + "\r\n", "utf8");
+} catch (error) {
+  // Windows locks a file while Excel has it open, so it can't be overwritten.
+  if ((error as { code?: string }).code === "EBUSY") {
+    console.error("volunteer-links.csv is open in Excel. Close it there, then run `npm run links` again.");
+    process.exit(1);
+  }
+  throw error;
+}
 console.log(`Wrote ${rows.length} links to volunteer-links.csv`);

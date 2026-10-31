@@ -85,6 +85,7 @@
    - ✅ 本地测过：登录、密码错误、没登录会被跳转、改时段再改回。**发公告没在本地测**，因为会真的推送给所有人。
    - ✅ 已上线，`ADMIN_PASSWORD` 已设（线上 `/admin` 显示密码框）。
    - ✅ Lingtong 在线上测过发公告，正常。
+   - ✅ 一点就进的管理员链接：`/admin?key=<ADMIN_PASSWORD>`（`proxy.ts`）。打开后自动登录，再跳回干净的 `/admin`。本地测过，等 push。密码里有特殊字符要做 URL 编码。拿到链接就是管理员，不要外传。
    - ✅ 管理页第二轮（本地做好、build 通过，等 push）：在管理页加新志愿者、改到场 / 离场时间，以及新页面 `/admin/overview`（Volunteers by task、Tasks by volunteer，和 Excel 的表一样）。讲解见 `docs/admin-explained.md` 最后一节。
 3. ✅ **主页面 `/`（参赛者和所有人）**（讲解见 `docs/step-3-explained.md`）：已上线。
    - 内容：当天时间表（Now / Next / Done，带地图）、PG6 总览地图、午饭（Graham Center 的 Google Maps 链接，以及走回 PG6 的步行路线）。
@@ -183,6 +184,7 @@
 | `scripts/check-instructions.ts` | 说明格式解析的自测：`npx tsx scripts/check-instructions.ts` |
 | `scripts/check-time.ts` | 时间换算的自测：`npx tsx scripts/check-time.ts` |
 | `docs/admin-explained.md` | 管理页的中文逐文件讲解 |
+| `proxy.ts` | `/admin?key=密码` 一点登录，见管理页讲解第三轮 |
 | `app/admin/overview/page.tsx` | `/admin/overview`：全部数据，按任务和按人两种排法 |
 | `app/admin/`、`lib/admin-auth.ts`、`components/admin-forms.tsx`、`components/announcements.tsx`、`components/auto-refresh.tsx` | 管理页和公告，见管理页讲解 |
 | `docs/step-4-explained.md` | 第 4 步（推送通知）的中文逐文件讲解 |

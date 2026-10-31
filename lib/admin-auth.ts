@@ -33,14 +33,23 @@ export async function requireAdmin(): Promise<void> {
   if (!(await isAdmin())) throw new Error("Not logged in");
 }
 
-export async function startAdminSession(): Promise<void> {
-  (await cookies()).set(COOKIE, signature(process.env.ADMIN_PASSWORD!), {
+// The login cookie: name, value and settings. Used by the login form and by the /admin?key=... link (proxy.ts).
+export function adminCookie() {
+  return {
+    name: COOKIE,
+    value: signature(process.env.ADMIN_PASSWORD!),
     httpOnly: true, // page JavaScript can't read it
     secure: process.env.NODE_ENV === "production", // https only on the real site
-    sameSite: "strict", // not sent along when another site links or posts here
+    // "lax": sent when you open an /admin link from another app or site (needed for the key link),
+    // but not with forms other sites submit. Next.js also checks where Server Action requests come from.
+    sameSite: "lax" as const,
     path: "/admin",
     maxAge: 60 * 60 * 12, // 12 hours
-  });
+  };
+}
+
+export async function startAdminSession(): Promise<void> {
+  (await cookies()).set(adminCookie());
 }
 
 export async function endAdminSession(): Promise<void> {

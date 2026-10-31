@@ -120,3 +120,29 @@
 - 加一个测试人 "Zzz Test Person" → 跳到 `/admin/zzz-test-person` → 离场改成 19:00 → 页面显示 "8:00 AM – 7:00 PM · 11 hours" → 测完已经从数据库删掉。
 - 没登录打开 `/admin/overview` → 跳回 `/admin`。
 - 手机宽度下 All data 页面没有横向滚动。
+
+## 第三轮：一点就进的管理员链接（`/admin?key=密码`）
+
+| 文件 | 作用 |
+|---|---|
+| `proxy.ts`（项目根目录） | **新文件**。打开 `/admin?key=...` 时，先检查密码；对了就发登录 cookie。不管对错，都跳回干净的 `/admin` |
+| `lib/admin-auth.ts` | 新增 `adminCookie()`，登录表单和链接用同一份 cookie 设置；`sameSite` 从 `strict` 改成 `lax` |
+
+**为什么要用 `proxy.ts`？** 页面在渲染的时候不能设置 cookie。`proxy.ts` 是 Next.js 16 的写法（以前叫 middleware），在页面渲染**之前**运行，可以直接返回"跳转 + 设置 cookie"。`matcher: "/admin"` 让它只对 `/admin` 这一个网址生效，其他页面完全不经过它。
+
+**为什么要跳回 `/admin`？** 跳转以后，地址栏和浏览历史里只剩 `/admin`，不会一直显示密码。密码错了也跳回 `/admin`，看到的就是普通的登录框。
+
+**为什么 `strict` 改成 `lax`？** 从别的 App（备忘录、聊天）点这个链接时，浏览器把它当作"从别的网站过来"。`strict` 的 cookie 在这种情况下，跳转后的那一页拿不到，就会还停在登录框。`lax` 在"直接打开链接"时会带上 cookie，但别的网站提交的表单仍然带不上；而且 Next.js 自己也会检查 Server Action 请求是从哪里来的。
+
+**链接格式**：`https://fiu-icpc-hub.vercel.app/admin?key=你的密码`。如果密码里有空格或者 `& # ? % + /` 这些符号，要先编码（比如空格写成 `%20`，`&` 写成 `%26`）；只有字母和数字就不用。
+
+**风险（Lingtong 选择这样做，知道风险）**：
+- 拿到这个链接的人就是管理员。不要发到群里，不要截图。
+- 密码会出现在 Vercel 的访问日志里（只有你的 Vercel 账号能看到）。
+- 链接泄露了就换 `ADMIN_PASSWORD`（Vercel 里改，再重新部署）。换了以后旧链接和所有人的登录都会失效。
+
+**测过的**（临时密码 `local test&1`，里面故意放了空格和 `&`）：
+- 错的 key → 跳到 `/admin`，没有 cookie。
+- 编码过的正确 key → 跳到 `/admin`，带上 cookie（`SameSite=lax`），页面显示 "Log out"。
+- 浏览器里打开以后，地址栏只剩 `/admin`。
+- 其他页面加 `?key=` 不受影响。
