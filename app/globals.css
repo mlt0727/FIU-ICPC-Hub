@@ -1,0 +1,126 @@
+/* Design tokens from design-system/icpc-checkpoint/MASTER.md */
+:root {
+  --bg: #0e1420;
+  --card: #141b28;
+  --card-now: #1a1f2b;
+  --border: #2a3547;
+  --text: #e6edf6;
+  --text-2: #9aa7ba;
+  --text-done: #7d8ba1;
+  --now: #f5b942;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums; /* digits all the same width, so times line up */
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* One centered column, at most 480px wide. env(...) keeps text clear of the notch and home bar. */
+main {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+
+:focus-visible {
+  outline: 2px solid var(--now);
+  outline-offset: 2px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  color: var(--text-2);
+  margin: 0;
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 500;
+  margin: 6px 0 12px;
+}
+
+/* Arrive / Leave / Total in three equal columns */
+.hours {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0 0 8px;
+}
+.hours dt {
+  font-size: 12px;
+  color: var(--text-2);
+}
+.hours dd {
+  margin: 0;
+  font-size: 16px;
+}
+
+.cards {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 10px;
+}
+.card-time {
+  font-size: 13px;
+  color: var(--text-2);
+  margin: 0;
+}
+.card-name {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 4px 0 6px;
+}
+.card-loc {
+  font-size: 13px;
+  color: var(--text-2);
+  margin: 0;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* The task happening right now: amber outline. Padding drops by 1px so the thicker border doesn't shift the text. */
+.card.now {
+  background: var(--card-now);
+  border: 2px solid var(--now);
+  padding: 11px;
+}
+.card.now .card-time {
+  color: var(--now);
+}
+
+/* Finished tasks: dimmer text, still readable (no opacity) */
+.card.done,
+.card.done .card-time,
+.card.done .card-loc {
+  color: var(--text-done);
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 28px 0 0;
+}
