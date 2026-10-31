@@ -1,6 +1,8 @@
 import { mapsLinkFor, roomsIn } from "@/lib/rooms";
 import type { Volunteer } from "@/lib/schedule";
 import { formatEventDay, formatHours, formatRange, formatTime } from "@/lib/time";
+import { Announcements } from "./announcements";
+import { AutoRefresh } from "./auto-refresh";
 import { NotifyButton } from "./notify-button";
 import { TaskList } from "./task-list";
 
@@ -31,6 +33,8 @@ export function VolunteerView({ volunteer: v, now }: { volunteer: Volunteer; now
         </dl>
       )}
 
+      <AutoRefresh />
+      <Announcements />
       <NotifyButton slug={v.slug} publicKey={process.env.VAPID_PUBLIC_KEY ?? ""} />
 
       {v.team === "tech" ? (

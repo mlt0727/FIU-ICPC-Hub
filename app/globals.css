@@ -270,3 +270,79 @@ h1 {
   color: var(--now);
   text-decoration: none;
 }
+
+/* Announcements at the top of volunteer pages (components/announcements.tsx) */
+.announcement {
+  border: 2px solid var(--now);
+  border-radius: 12px;
+  padding: 11px;
+  margin-top: 10px;
+  background: var(--card-now);
+}
+.announcement-body {
+  margin: 0;
+  font-size: 14px;
+  white-space: pre-wrap; /* keep the line breaks the organizer typed */
+}
+
+/* Admin page forms */
+.admin-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+.field {
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.field input,
+.field textarea,
+.field select {
+  min-height: 44px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px; /* 16px stops iPhone from zooming in when the field is tapped */
+}
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.form-error,
+.form-ok {
+  margin: 0;
+  font-size: 14px;
+}
+.form-error {
+  color: #f87171;
+}
+.form-ok {
+  color: var(--now);
+}
+.admin-people {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+}
+.admin-people li {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+main a {
+  color: var(--now);
+}
+/* Buttons in admin forms keep their natural width, lined up on the left */
+.admin-form > button {
+  justify-self: start;
+}
+.card > form + form {
+  margin-top: 8px;
+}

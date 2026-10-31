@@ -76,7 +76,14 @@
 
      **已经上线**（Lingtong 已 push）。Lingtong 认为主屏幕功能基本可以了。
    - ✅ **所有志愿者的个人链接已导出**：`npm run links` → `volunteer-links.csv`（49 人，不进 git）。线上 49 个链接和 manifest 都检查过，全部正常。**还没发给志愿者**，发之前先看下面"发链接之前"。
-   - ⬜ **管理页**（还没开始）。
+   - ✅ **管理页 `/admin`**（讲解见 `docs/admin-explained.md`），本地写好、build 通过：
+     - 密码登录（`ADMIN_PASSWORD`）。
+     - 发公告：存进数据库、推送给所有开了通知的手机、显示在志愿者页面顶部。
+     - 改任务地点和说明。
+     - 改某个人的时段：时间、个人地点、删除、新增。
+     - 志愿者页面每分钟自动刷新。
+   - ✅ 本地测过：登录、密码错误、没登录会被跳转、改时段再改回。**发公告没在本地测**，因为会真的推送给所有人。
+   - ⬜ **Lingtong 要做的**：设 `ADMIN_PASSWORD`（`.env.local` 和 Vercel 都要填，Vercel 里选 Sensitive），push，再到线上 `/admin` 发一条测试公告，确认手机收到、页面顶部能看到，然后在管理页删掉这条公告。
 3. ⬜ **参赛者页面**：首页现在只有一个占位卡片。部署已经搞定，这一步只剩做内容。
 4. 🟡 **推送通知**（讲解见 `docs/step-4-explained.md`）
    - ✅ 本地写好、build 通过：
@@ -92,7 +99,7 @@
    - ✅ cron-job.org 已设置（Lingtong 的账号，每分钟调用一次 `/api/cron/reminders`）。Test run 返回 200 和 `{"shifts":0,"sent":0}`。
    - ✅ **任务前提醒全流程测通**（2026-10-31）：临时测试任务 3:26 PM 开始，提醒在 3:16:13 PM 发出，Lingtong 的 iPhone 收到了。测试任务已经删掉。
    - ⬜ 安卓测试。
-   - ⬜ 公告推送（跟管理页一起做）。
+   - ✅ 公告推送已做（在管理页里），等线上测试。
 
 ## 地点和地图（2026-10-31 做的，讲解见 `docs/step-2-explained.md` 最后一节）
 
@@ -136,10 +143,7 @@
 1. **用安卓测一次**推送通知（iPhone 已经测通）。
 2. **请 Lingtong 确认地点分配**：Print Running 105/106 的分法、Directions 谁站哪个点（见上面"地点和地图"）。
 3. **换成真 logo**：Lingtong 提供 FIU 和 ICPC 的官方 logo 文件（最好是 SVG 或大尺寸透明 PNG），并确认 FIU 的品牌规范允许这样用。不要自己画、也不要从网上随便找。拿到以后放进 `public/`，改 `app/icons/[size]/route.tsx`：FIU logo 在上，ICPC logo 在下。图标最小只有 180px，两个 logo 都要在这么小的尺寸下还看得清。
-4. **管理页**（带密码，密码放在 Vercel 环境变量）：
-   - 改任务的地点和说明（填好以后卡片上就不再显示 "Location coming soon"）。
-   - 改某个人的时段。
-   - 发公告：存进 `announcements` 表，同时推送；网页上也显示最新公告。
+4. **管理页上线**：Lingtong 设好 `ADMIN_PASSWORD` 并 push 后，在线上测一次发公告。以后可能要加：在管理页改志愿者的到场 / 离场时间（现在还不能改）。
 5. **参赛者页面**：时间表、地图（可以复用 `components/room-map.tsx`）、餐厅和回来的路线，等 Lingtong 给素材。
 6. **比赛前收尾**：
    - 写给志愿者的"添加到主屏幕并打开通知"说明（英文）。
@@ -156,6 +160,8 @@
 | `lib/db.ts` / `lib/slug.ts` | 数据库连接 / 名字转网址 |
 | `data/task-details.json` | **Lingtong 待填**：每个任务的地点和说明。填完运行 `npm run db:details` |
 | `scripts/apply-task-details.ts` | `npm run db:details`，把 task-details.json 写进数据库，可以重复运行 |
+| `docs/admin-explained.md` | 管理页的中文逐文件讲解 |
+| `app/admin/`、`lib/admin-auth.ts`、`components/admin-forms.tsx`、`components/announcements.tsx`、`components/auto-refresh.tsx` | 管理页和公告，见管理页讲解 |
 | `docs/step-4-explained.md` | 第 4 步（推送通知）的中文逐文件讲解 |
 | `lib/push.ts`、`lib/push-subscription.ts`、`public/sw.js`、`components/notify-button.tsx`、`app/api/` | 推送通知，见第 4 步讲解 |
 | `public/pg6-map.webp`、`lib/rooms.ts`、`components/room-map.tsx` | PG6 平面图和房间高亮，见第 2 步讲解最后一节 |
@@ -202,7 +208,7 @@ npm run db:import -- "Final Volunteer_Availability.xlsx" --reset
 - 15 个任务的地点和说明（`task-details.json`，或者等管理页做好后在网页上填）。
 - 各任务类型的文档模板。
 - 参赛者内容：地图、餐厅路线、座位表的素材。
-- 管理页密码。
+- 管理页密码：由 Lingtong 自己定，填进 `.env.local` 和 Vercel 的 `ADMIN_PASSWORD`。Claude 看不到这个密码。
 - 任务开始前几分钟提醒：现在先用 10 分钟（`lib/time.ts` 的 `REMINDER_MINUTES`），Lingtong 想改再说。
 - 地图：PG6 平面图、Lobby、Directions 站位、Graham Center 的 Google Maps 链接都已经有了。参赛者页面还需要"从 Graham Center 走回 PG6"的路线（看要不要做）。
 - 技术组卡片上写什么（现在写的是 "Tech team details will appear here."）。

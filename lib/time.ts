@@ -31,3 +31,9 @@ export function formatEventDay(): string {
 
 // How long before a task starts its reminder is sent. Shown in the page text too, so change it only here.
 export const REMINDER_MINUTES = 10;
+
+// "2026-11-07T13:00:00Z" -> "08:00" in the event's time zone, for <input type="time">.
+const clock24 = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: TZ });
+export function toInputTime(isoTime: string): string {
+  return clock24.format(new Date(isoTime));
+}
