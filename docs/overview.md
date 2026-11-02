@@ -37,7 +37,7 @@ Excel 名单 ──(npm run db:import)──▶ Neon 数据库 ◀──(管理�
 
 1. 手机请求网址，Vercel 运行 `app/[slug]/page.tsx`。
 2. 它调用 `lib/schedule.ts` 查数据库，拿到这个人和他的时段。
-3. `components/volunteer-view.tsx` 把名字、到场 / 离场时间和卡片拼成网页。时间格式由 `lib/time.ts` 负责。
+3. `components/volunteer-view.tsx` 把名字、到场 / 离场时间和卡片拼成网页，并在最前面加一张按到场时间生成的 **Check in**（PG6 112）卡片。时间格式由 `lib/time.ts` 负责。
 4. 网页到了手机上：
    - `task-list.tsx` 用手机的时钟判断哪张卡片是 Now / Next / Done；
    - `remember-me.tsx` 写 cookie，记住这个人；

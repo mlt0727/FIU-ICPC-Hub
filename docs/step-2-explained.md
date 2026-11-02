@@ -200,3 +200,19 @@ Lingtong 反馈原来的高亮不够明显，所以现在地图分三层：
 注意：再运行 `npm run db:details` 时，文件里的内容会覆盖管理页改过的内容。
 
 只有 Registration 和 Balloon Running 有说明，其他任务的卡片上没有 "Instructions"，等 Lingtong 和其他人确认后再加。草稿在 `docs/task-instructions-draft.md`。
+
+## Check in 卡片（`components/volunteer-view.tsx`）
+
+每个人（包括技术组）卡片列表的最前面，多了一张 **Check in**：
+- 时间 = 这个人的到场时间，只显示一个时间（比如 `8:00 AM`），不是时间段。
+- 地点 = `PG6 112`，所以也有 "Show on map"，地图上会高亮 112。
+- 到场后 15 分钟内显示 "Now"，之后显示 "Done"。
+
+**这张卡片不在数据库里**，是 `checkInCard()` 根据 `arrive_at` 临时生成的。好处是：在管理页改了某人的到场时间，Check in 卡片会跟着变，不用另外维护。
+因为它不在 `shifts` 表里，所以：
+- 不会单独发"10 分钟后 Check in"的推送（大多数人第一个任务就从到场时间开始，那个任务的提醒会在同一时间发出）；
+- `/admin/overview` 里看不到它。
+
+技术组原来只有一张 "Tech team" 卡片，现在前面也多了 Check in 卡片。
+
+**规则（组织者定的）**：所有人到了都必须**先去 112 签到**，再去做第一个任务或者去吃午饭，就算午饭和到场是同一时间也一样。Check in 卡片上的 "Instructions" 写的就是这条。

@@ -111,6 +111,12 @@
    - ⏸ 安卓测试（Lingtong 说暂时不做）。
    - ✅ 公告推送已做（在管理页里）。
 
+## Check in 卡片（2026-11-02）
+
+- 每个人（包括技术组）的卡片最前面多一张 **Check in**：时间 = 到场时间，地点 = `PG6 112`，到场后 15 分钟内算 Now。
+- 不存数据库，由 `components/volunteer-view.tsx` 的 `checkInCard()` 根据 `arrive_at` 生成，改到场时间会自动跟着变。没有单独的推送提醒，`/admin/overview` 里也不显示。
+- **规则**：所有人必须先去 PG6 112 签到，再去做任务或吃饭（Lingtong 2026-11-02 确认）。Check in 卡片的 Instructions 里写了这句。讲解见 `docs/step-2-explained.md` 最后一节。
+
 ## 地点和地图（2026-10-31 做的，讲解见 `docs/step-2-explained.md` 最后一节）
 
 - Lingtong 已经在 `data/task-details.json` 里填了大部分地点，已用 `npm run db:details` 写进数据库。他把 Photography 和 Balloon Running 的地点误写在 `instructions` 里了，Claude 已经挪到 `location`。
