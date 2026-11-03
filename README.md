@@ -1,113 +1,236 @@
-# FIU ICPC Hub
+# FIU ICPC Volunteer Hub
 
-A mobile-first web app for running contest day at FIU: the ICPC regional contest on **Saturday, November 7, 2026**.
+A proposed web-based platform for organizing ICPC volunteers, event schedules, assignments, locations, and announcements at Florida International University (FIU).
 
-Live site: https://fiu-icpc-hub.vercel.app
+> **Document status:** The feature descriptions below are based on the project whiteboard and may include planned functionality. The technology and setup instructions are based on the existing FIU ICPC Hub codebase.
 
-## Why this exists
+## Overview
 
-Contest day involves about 50 volunteers, many contestants and coaches, and a schedule that changes by the hour. Before this app, the plan lived in a spreadsheet:
+The **FIU ICPC Volunteer Hub** provides volunteers with a single place to view their responsibilities and gives event administrators a central portal for managing volunteers and schedules.
 
-- **Volunteers had to dig through a shared spreadsheet** to find their own shifts, and many don't have it open on their phone during the day.
-- **Many volunteers aren't CS students.** Some have never heard of a programming contest, so instructions need to be plain and obvious.
-- **People miss things.** Shifts start and end all day, and announcements sent in a group chat get buried.
-- **Nobody should need an account or an app store.** Volunteers get one link, and that's it.
+**Core concept:** Every student or volunteer receives a **unique link** that opens their personalized dashboard. Administrators use a separate portal to manage the event.
 
-The goal: every volunteer opens one personal link and sees exactly what they need to do, where, and when. They get a reminder before each task, and organizers can reach everyone at once.
+## User Roles
 
-## What it does
+| Role | Purpose |
+| --- | --- |
+| **Volunteer / Student** | View event schedules, assigned tasks, locations, instructions, and announcements. |
+| **Administrator** | Manage volunteers, assignments, schedule details, and announcements. |
 
-**For everyone (contestants, coaches, volunteers)**: the main page `/`
+## Volunteer Features
 
-- The day's schedule, with the current item highlighted (Now / Next / Done)
-- A floor plan of the venue (PG6) with rooms highlighted
-- Where lunch is, with directions back to the contest area
+### 1. Personalized Access
 
-**For volunteers**: a personal page, for example `/jane-doe`
+- Open the Volunteer Hub through a unique personal link.
+- View the assignments and schedule associated with that volunteer.
 
-- Name, arrival and leave times, and total hours
-- One card per task: time, task name, location. The task happening right now has an amber outline.
-- "Show on map" for each location, and step-by-step instructions where they exist
-- Push notifications 10 minutes before each task, plus announcements from the organizers
-- Works as a Home Screen app on iPhone and Android, and remembers who you are
+### 2. Event Schedule and Venue Maps
 
-**For organizers**: a password-protected admin page `/admin`
+- View the complete schedule for the event day.
+- Access the venue map associated with each event.
+- See the scheduled start and end times of personally assigned shifts, including the times originally signed up for.
 
-- Send an announcement: shown on every volunteer page and pushed to every phone that has notifications on
-- Edit task locations and instructions
-- Add volunteers, and change anyone's shifts or hours
-- See the whole plan in one table, by task or by person
+### 3. Task and Assignment Details
 
-## Design principles
+- View a personal list of assigned jobs or duties.
+- Open each assignment to see:
+  - Task or job name.
+  - Scheduled start and end times.
+  - Location or venue.
+  - Relevant map.
+  - Instructions, when provided.
 
-- **Plain language.** Everyday words ("Now", "Next", "Done"), no contest jargon.
-- **One card, three facts.** Time, task, location. Everything else is one tap away.
-- **Phone first.** Built for a 375 px screen, then checked on larger ones. Dark theme, high contrast, large tap targets.
-- **No logins for volunteers.** A personal link is enough. The links are not secret; seeing someone else's schedule is fine.
-- **Push is a bonus, not the only channel.** Notifications can be silenced by Focus mode, so announcements always appear on the page too.
+### 4. Self-Test
 
-## How it works
+- Provide a **self-test button** so volunteers can verify that the app is working for them.
+- The exact behavior of the self-test is still to be defined.
 
+### 5. Announcements
+
+- Receive announcements published by administrators.
+- View current and previous announcements for as long as administrators have not deleted them.
+
+### 6. Automatic Reminders
+
+- Send an automatic reminder **10 minutes before the volunteer's next assigned event or shift**.
+- The reminder delivery method is to be determined.
+
+## Administrator Features
+
+### 1. Admin Portal
+
+- Provide a separate link to open the administrative portal.
+- Restrict administrative actions to authorized administrators.
+
+### 2. Volunteer and Assignment Management
+
+- View volunteers grouped by task or job.
+- View all tasks assigned to an individual volunteer.
+- Manually add a volunteer and assign duties to them.
+- Edit an individual volunteer's duties and scheduled times.
+- **Do not automatically reassign volunteers** when administrators edit assignments; reassignment must be an explicit administrative action.
+
+### 3. Job and Venue Management
+
+- Change the venue or location for a job when needed.
+- Update job instructions when needed.
+- Ensure updated details are available to affected volunteers.
+
+### 4. Announcement Management
+
+- Create and send announcements to volunteers.
+- Delete announcements that should no longer be displayed.
+- Keep past announcements visible until they are deleted by an administrator.
+
+## Communication Channels
+
+| Channel | Intended use | Direction |
+| --- | --- | --- |
+| **ICPC Volunteer Hub** | Official event announcements and schedule information | One-way announcements from administrators to volunteers |
+| **WhatsApp** | Questions, discussions, and coordination | Two-way conversations |
+
+The Volunteer Hub is intended to complement WhatsApp, not replace two-way messaging.
+
+## Data Requirements
+
+The platform needs to store and connect the following information:
+
+| Data | Description |
+| --- | --- |
+| **Volunteers** | Student/volunteer names and unique dashboard links. |
+| **Events** | Event names, dates, times, venues, and associated maps. |
+| **Tasks / Jobs** | Volunteer duties, locations, and any instructions. |
+| **Assignments** | Which volunteer is assigned to which event/task, and the corresponding shift start and end times. |
+| **Student Hours** | Hours associated with each student or volunteer; the counting method needs clarification. |
+| **Announcements** | Admin-posted messages and whether they remain visible. |
+
+### Suggested Data Relationships
+
+```text
+Volunteer
+  ├── Unique dashboard link
+  ├── Assignments
+  │     ├── Event
+  │     ├── Task / job
+  │     ├── Start and end times
+  │     └── Location and instructions
+  └── Student hours
+
+Event
+  ├── Date and time
+  ├── Venue and map
+  └── Assignments
+
+Announcement
+  ├── Content
+  ├── Created by administrator
+  └── Visibility / deletion status
 ```
-Excel roster ──import──▶ Postgres (Neon) ◀── admin page edits
-                              │
-                              ▼
-                 Next.js app on Vercel (server-rendered pages)
-                              │
-         ┌────────────────────┼─────────────────────┐
-         ▼                    ▼                     ▼
-   main page /       personal page /name     push notifications
-                                                    ▲
-             cron-job.org calls /api/cron/reminders every minute
-```
 
-A few decisions worth knowing:
+This is a conceptual model, not a finalized database schema.
 
-- **One web app manifest per volunteer.** On iPhone, a Home Screen app doesn't share cookies with Safari, and notifications only work from the Home Screen. So each personal page links its own manifest whose `start_url` is that person's page: the Home Screen icon always knows who it belongs to.
-- **Reminders without a paid plan.** Vercel's free plan only runs cron jobs once a day, so an external scheduler (cron-job.org) calls a protected endpoint every minute. Each shift is claimed and marked in a single SQL `UPDATE`, so nobody gets the same reminder twice.
-- **All times are stored as exact moments** (`timestamptz`) and shown in New York time, whatever time zone the phone is set to.
+## Typical Workflows
 
-## Tech stack
+### Volunteer Workflow
 
-- [Next.js 16](https://nextjs.org) (App Router) with TypeScript and React 19
-- [Neon](https://neon.tech) serverless Postgres, plain SQL with `@neondatabase/serverless` (no ORM)
-- [Vercel](https://vercel.com) hosting; pushes to `main` deploy automatically
-- Web Push with VAPID (`web-push`) and a service worker (`public/sw.js`)
-- `exceljs` to import the volunteer roster
+1. Open the unique dashboard link.
+2. Review the full event-day schedule and venue maps.
+3. Check personal shift times and assigned jobs.
+4. Open a job to review its location and instructions.
+5. Read announcements and receive a reminder before the next assigned shift.
 
-## Running it locally
+### Administrator Workflow
+
+1. Open the admin portal.
+2. Review the volunteer roster by task or volunteer.
+3. Add volunteers or update duties, shift times, locations, and instructions as needed.
+4. Publish or delete announcements.
+5. Verify that changes are reflected in the relevant volunteer dashboards.
+
+## Key Rules
+
+- Every volunteer must have their own unique dashboard link.
+- Volunteers should be able to see both the full event-day schedule and their personal assignments.
+- Edits to duties or shift times must **not trigger automatic reassignment**.
+- Previously posted announcements remain visible unless deleted by an administrator.
+- Reminders are scheduled for **10 minutes before** the next assigned event or shift.
+- The Volunteer Hub is a **one-way announcement platform**; WhatsApp handles back-and-forth conversations.
+
+## Tech Stack
+
+The following stack is used by the existing [FIU ICPC Hub repository](https://github.com/mlt0727/FIU-ICPC-Hub).
+
+| Component | Technology | Purpose |
+| --- | --- | --- |
+| **Frontend and backend** | [Next.js 16](https://nextjs.org/) (App Router), [React 19](https://react.dev/), and TypeScript | Responsive volunteer pages, admin portal, and server-side routes. |
+| **Database** | [Neon PostgreSQL](https://neon.tech/) with `@neondatabase/serverless` | Store volunteer, schedule, assignment, and announcement data using SQL. |
+| **Hosting and deployment** | [Vercel](https://vercel.com/) | Host the application and deploy changes from the `main` branch. |
+| **Notifications** | Web Push (VAPID), `web-push`, and a service worker | Deliver push announcements and shift reminders to subscribed devices. |
+| **Reminder scheduler** | [cron-job.org](https://cron-job.org/) | Call the protected reminder endpoint on a recurring schedule. |
+| **Data import** | `exceljs` | Import the volunteer roster from Excel. |
+| **Package management** | Node.js and npm | Install dependencies and run the project scripts. |
+
+## Open Online or Run Locally
+
+### Option 1: Open Online
+
+**Project deployment:** [https://fiu-icpc-hub.vercel.app](https://fiu-icpc-hub.vercel.app)
+
+The deployment URL is taken from the existing project repository. The main routes are:
+
+- **Main event dashboard:** [`/`](https://fiu-icpc-hub.vercel.app/) — event schedule and venue information.
+- **Personal volunteer dashboard:** `/<volunteer-slug>` — individual tasks, times, and instructions. Volunteers should use their assigned personal links.
+- **Admin portal:** [`/admin`](https://fiu-icpc-hub.vercel.app/admin) — restricted to authorized administrators.
+
+### Option 2: Run Locally
+
+**Prerequisites:** Git, Node.js 20.9 or newer, npm, access to the GitHub repository (which is private), and the required environment credentials. A separate development database is recommended.
+
+**1. Clone the repository and install dependencies:**
 
 ```bash
+git clone https://github.com/mlt0727/FIU-ICPC-Hub.git
+cd FIU-ICPC-Hub
 npm install
-cp .env.example .env.local   # fill in DATABASE_URL and the other values
-npm run db:migrate           # create the tables (safe to re-run)
-npm run dev                  # http://localhost:3000
 ```
 
-Useful commands:
+**2. Create a local environment file:**
 
-| Command | What it does |
-|---|---|
-| `npm run db:import -- "roster.xlsx" [--reset]` | Import the volunteer roster from Excel |
-| `npm run db:details` | Load task locations and instructions from `data/task-details.json` |
-| `npm run links` | Export every volunteer's personal link to `volunteer-links.csv` |
-| `npm run build` / `npm run typecheck` | Check the app builds, as Vercel does |
+On Windows PowerShell:
 
-Tip: add `?now=2026-11-07T14:00-05:00` to any page URL to preview it as if it were that moment on contest day.
-
-Environment variables (see `.env.example`): `DATABASE_URL`, `EVENT_DATE`, `EVENT_TZ`, `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `CRON_SECRET`, `ADMIN_PASSWORD`.
-
-The volunteer roster and the exported links contain personal names, so they are kept out of git.
-
-## Project layout
-
+```powershell
+Copy-Item .env.example .env.local
 ```
-app/          pages and API routes (the folder path is the URL)
-components/   pieces of the pages (task cards, map, reminder button, ...)
-lib/          shared server code (database, time zones, push, admin login)
-data/         hand-edited content (task locations, instructions, event schedule)
-db/           database schema and extra seed data
-scripts/      command-line tools (import, export, self-checks)
-public/       service worker and the venue floor plan
-docs/         detailed write-ups (in Chinese), starting with docs/overview.md
+
+On macOS, Linux, or Git Bash:
+
+```bash
+cp .env.example .env.local
 ```
+
+Edit `.env.local` and supply the appropriate values. The template includes `DATABASE_URL`, `EVENT_DATE`, `EVENT_TZ`, `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `CRON_SECRET`, and `ADMIN_PASSWORD`. **Never commit `.env.local` or share credentials.**
+
+**3. Prepare the database and start the development server:**
+
+```bash
+npm run db:migrate
+npm run dev
+```
+
+Open **[http://localhost:3000](http://localhost:3000)** in your browser. The admin page is at `http://localhost:3000/admin`.
+
+> **Note:** Run migrations against a database you are authorized to change; use a separate development database where possible. Automatic reminders also depend on the external scheduler and valid push configuration, not just the local web server.
+
+### Useful Development Commands
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the local development server. |
+| `npm run build` | Create a production build. |
+| `npm run typecheck` | Check TypeScript types. |
+| `npm run db:migrate` | Apply the database schema. |
+| `npm run db:import -- "roster.xlsx"` | Import a volunteer roster from Excel. |
+| `npm run db:details` | Apply task locations and instructions. |
+| `npm run links` | Export volunteers' individual dashboard links. |
+
+For additional implementation details, see the repository's [technical overview](https://github.com/mlt0727/FIU-ICPC-Hub/blob/main/docs/overview-en.md).
