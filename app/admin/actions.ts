@@ -159,6 +159,12 @@ export async function saveHours(form: FormData) {
   const arrive = text(form, "arrive");
   const leave = text(form, "leave");
   if (!isTime(arrive) || !isTime(leave) || leave <= arrive) throw new Error("Bad times");
-  await sql`update volunteers set arrive_at = ${at(arrive)}, leave_at = ${at(leave)} where id = ${id(form, "id")}`;
+  // If the arrive time moves, forget that the check-in reminder was sent, so the new time gets one.
+  await sql`
+    update volunteers set
+      arrive_at = ${at(arrive)},
+      leave_at = ${at(leave)},
+      checkin_reminder_sent_at = case when arrive_at = ${at(arrive)} then checkin_reminder_sent_at end
+    where id = ${id(form, "id")}`;
   refresh();
 }

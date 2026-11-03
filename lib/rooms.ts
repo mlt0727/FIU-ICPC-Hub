@@ -44,6 +44,9 @@ export function roomsIn(location: string | null): string[] {
   return found.map((r) => r.id);
 }
 
+// Everyone checks in here first when they arrive (Check in card + check-in push).
+export const CHECK_IN_LOCATION = "PG6 112";
+
 // Places that aren't on the floor plan get a Google Maps link instead.
 // Lunch is at 8th Street Campus Kitchen, the dining hall inside the Graham Center (GC).
 export const LUNCH_MAP_URL = "https://www.google.com/maps/search/?api=1&query=8th+Street+Campus+Kitchen%2C+Graham+Center%2C+FIU";

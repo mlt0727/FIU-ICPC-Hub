@@ -63,3 +63,6 @@ alter table shifts add column if not exists reminder_sent_at timestamptz;
 -- Location for this one person's shift, when people on the same task go to different places
 -- (e.g. Print Running: some in Room 105, some in Room 106). Empty = use the task's location.
 alter table shifts add column if not exists location text;
+
+-- When the "check in at Room 112" push was sent for this person (null = not yet). Stops double reminders.
+alter table volunteers add column if not exists checkin_reminder_sent_at timestamptz;

@@ -111,3 +111,30 @@
 2. iPhone：从主屏幕打开 FIU ICPC Hub → 点 "Turn on reminders" → 允许 → 点 "Send a test notification"，几秒内应该收到通知。点通知应该打开你的页面。
 3. 安卓：Chrome 打开你的链接，同样操作。
 4. 任务前提醒要等 cron-job.org 设好；比赛当天之前不会有任何时段"10 分钟内开始"，所以平时调用它什么都不会发。
+
+## 第二轮：签到提醒（2026-11-02）
+
+| 文件 | 作用 |
+|---|---|
+| `db/schema.sql` | `volunteers` 表加了一列 `checkin_reminder_sent_at`：签到提醒发过没有 |
+| `app/api/cron/reminders/route.ts` | 每分钟除了发任务提醒，也发签到提醒 |
+| `app/admin/actions.ts` | 管理页改了到场时间，就清空 `checkin_reminder_sent_at`，新的时间还会再提醒 |
+| `lib/rooms.ts` | `CHECK_IN_LOCATION = "PG6 112"`，Check in 卡片和签到提醒共用这一个值 |
+
+**签到提醒**：到场时间前 10 分钟，推送标题 `Check in at 12:00 PM`，内容 `Go to PG6 112 first, before anything else`，点开是这个人的个人页。
+
+**和任务提醒的关系**：比如 12:00 到场、12:00 午饭的人，11:50 左右会收到两条：
+1. "Check in at 12:00 PM"
+2. "Lunch at 12:00 PM"
+
+代码里**先发签到、再发任务**，所以手机上签到那条一般排在前面。
+
+**防止重复**的做法和任务提醒一样：一条 `update ... returning` 同时"找出到点的人"和"标记已发"。
+
+**顺手修的问题**：任务提醒原来用的是任务本身的地点（`t.location`），所以 Print Running 的人收到的是 "PG6 105 or 106"。现在改成和卡片一样，先用这个人自己的地点：`coalesce(s.location, t.location)`。所以他们收到的是 "PG6 105" 或 "PG6 106"。
+
+**代码结构**：原来发送部分是写死给任务用的，现在提成了一个 `sendAll(rows, message)`：给每一行找到这个人的所有手机，每台发一条。签到和任务都用它。
+
+**测过的**（本地）：
+- 用数据库验证：假装现在是比赛日 11:52，正好选出 12:00 到场的 12 个人。
+- 实际测试：临时把 Lingtong 的到场时间改成"6 分钟后"，调用一次本地接口，返回 `{"checkIns":1,"shifts":0,"sent":2,"failed":0}`（他有两台设备开了通知）。马上再调用一次，返回 `checkIns: 0`，说明没有重复。测完已经把到场时间改回 11 月 7 日 8:00 AM。

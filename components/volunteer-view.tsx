@@ -1,4 +1,4 @@
-import { mapsLinkFor, roomsIn } from "@/lib/rooms";
+import { CHECK_IN_LOCATION, mapsLinkFor, roomsIn } from "@/lib/rooms";
 import type { Volunteer } from "@/lib/schedule";
 import { formatEventDay, formatHours, formatRange, formatTime } from "@/lib/time";
 import { Announcements } from "./announcements";
@@ -10,7 +10,6 @@ import { VolunteerNav } from "./volunteer-nav";
 // Everyone checks in at Room 112 when they arrive. This card isn't stored in the database: it is made
 // from the arrive time, so changing someone's arrive time on the admin page moves it too.
 // It counts as "Now" for the first 15 minutes after arriving.
-const CHECK_IN_LOCATION = "PG6 112";
 function checkInCard(arriveAt: string): Card {
   return {
     task: "Check in",

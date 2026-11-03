@@ -114,8 +114,10 @@
 ## Check in 卡片（2026-11-02）
 
 - 每个人（包括技术组）的卡片最前面多一张 **Check in**：时间 = 到场时间，地点 = `PG6 112`，到场后 15 分钟内算 Now。
-- 不存数据库，由 `components/volunteer-view.tsx` 的 `checkInCard()` 根据 `arrive_at` 生成，改到场时间会自动跟着变。没有单独的推送提醒，`/admin/overview` 里也不显示。
+- 不存数据库，由 `components/volunteer-view.tsx` 的 `checkInCard()` 根据 `arrive_at` 生成，改到场时间会自动跟着变。`/admin/overview` 里不显示。
 - **规则**：所有人必须先去 PG6 112 签到，再去做任务或吃饭（Lingtong 2026-11-02 确认）。Check in 卡片的 Instructions 里写了这句。讲解见 `docs/step-2-explained.md` 最后一节。
+- ✅ **签到推送**（2026-11-02，本地测过，等 push）：到场前 10 分钟推 "Check in at 12:00 PM · Go to PG6 112 first"，用 `volunteers.checkin_reminder_sent_at` 防止重复。管理页改到场时间会重新提醒。讲解见 `docs/step-4-explained.md` 第二轮。
+- 顺手修好：任务提醒原来不用个人地点（Print Running 收到 "105 or 106"），现在用 `coalesce(s.location, t.location)`。
 
 ## 地点和地图（2026-10-31 做的，讲解见 `docs/step-2-explained.md` 最后一节）
 
