@@ -129,6 +129,7 @@ Excel 名单 ──(npm run db:import)──▶ Neon 数据库 ◀──(管理�
 |---|---|
 | `public/sw.js` | service worker：在手机后台接收推送、弹出通知 |
 | `public/pg6-map.webp` | PG6 平面图 |
+| `public/seating-116.webp` | 116 房间座位表（每张桌子的学校、D1/D2、队名），主页面 "Seating in Room 116" 用 |
 | `proxy.ts` | `/admin?key=密码`：点一下就登录管理页 |
 | `README.md` | 英文的项目介绍：为什么做、做了什么、怎么运行（GitHub 首页显示的就是它） |
 | `.env.local` | 真实的密钥和密码（不进 git）；`.env.example` 是空模板 |

@@ -94,7 +94,7 @@
    - 志愿者两个标签：My schedule 和 Contest day，本地测过可以来回切换。
    - ✅ 时间表已经按 Lingtong 给的海报填好：Registration 10:00 → Orientation 11:00 → Practice contest 12:00–1:30 → Lunch 12:30–1:45（8th Street Campus Kitchen，Graham Center 里）→ Move to contest area 1:45 → Contest 2:00–7:00（全部在 116）→ Dinner 7:00–7:30 → Awards 7:30–8:00。112 是教练的位置。参赛者没有早餐；晚饭参赛者和志愿者都有。
    - ✅ Lingtong 确认：参赛者 Orientation 在 116，Dinner 和 Awards 在 Lobby。
-   - ⬜ 座位表（等素材）。
+   - ✅ 座位表（2026-11-06）：主页面 "Seating in Room 116"，图片 `public/seating-116.webp`，来自 Lingtong 的 PDF。点图片打开原图可放大。本地测过，等 push。
 4. ✅ **推送通知**（讲解见 `docs/step-4-explained.md`）
    - ✅ 本地写好、build 通过：
      - "Turn on reminders" 按钮：iPhone 在 Safari 里打开时，会提示先添加到主屏幕。
@@ -131,6 +131,8 @@
     - 106：Pedro Remior、Subhash Gurappa、Yassine Mekdad（比赛期间也在跑），以及 Lyna Hamlaoui、Matthew Chavez-Alvarez、Muhammad Zain ul Abideen（只做中午）。
 
     Lingtong 说的 "10" 和 "166" 都按 105 / 106 理解。
+
+    **2026-11-06 更新**：Olivia Mason 和 Pedro Remior 不跑 Print Running 了，他们的 Print Running 时段已经从数据库删除。比赛期间的 Print Running 现在只有 4 人，两边各 2 人：105 是 Muhammad Abuzar、Oliver Hernandez；106 是 Subhash Gurappa、Yassine Mekdad。中午 12:00–1:00 的 5 人（Fabiola、Godwin → 105；Lyna、Matthew、Zain → 106）不变。**注意**：如果用 `--reset` 重新导入旧 Excel，Olivia 和 Pedro 的 Print Running 会回来。
   - **Directions**：Alex Santa Maria → Spot 1（Lobby 下面），Felipe Trujillo → Spot 2（106 南门），Oliver Hernandez → Spot 3（东边院子）。谁站哪个点是 Claude 按字母顺序定的，Lingtong 可以换。
   - 改分配：在 `task-details.json` 的 `byPerson` 里改名字，然后运行 `npm run db:details`，不用部署。
 - Event Break Down 和 Photography 写的是 "PG6"：工作范围是整个比赛现场，**不需要地图**（Lingtong 已确认）。
@@ -172,7 +174,7 @@
 2. Directions 谁站哪个点：Lingtong 还没说要换，先按现在的。
 3. ⏸ **换成真 logo**（Lingtong 说暂时不做）：Lingtong 提供 FIU 和 ICPC 的官方 logo 文件（最好是 SVG 或大尺寸透明 PNG），并确认 FIU 的品牌规范允许这样用。不要自己画、也不要从网上随便找。拿到以后放进 `public/`，改 `app/icons/[size]/route.tsx`：FIU logo 在上，ICPC logo 在下。图标最小只有 180px，两个 logo 都要在这么小的尺寸下还看得清。
 4. ✅ ~~管理页加人、改到场 / 离场~~（已做，见上面）。
-5. **主页面补完**：加座位表（Lingtong 之后会给素材）。
+5. ✅ ~~主页面座位表~~（已加）。
 6. **比赛前收尾**：
    - 写给志愿者的"添加到主屏幕并打开通知"说明（英文）。
    - ✅ Lingtong 的账号 `lingtong-meng` 保留，不删（Lingtong 2026-10-31 决定）。Breakfast Setup 任务也保留。

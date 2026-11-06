@@ -30,7 +30,11 @@
 
    这两个网址在 `lib/rooms.ts` 里（`LUNCH_MAP_URL`、`WALK_BACK_URL`），志愿者 Lunch 卡片上的链接也用同一个。
 
-座位表还没有做，等有素材再加。
+**座位表**（2026-11-06 加）：时间表下面是 "Seating in Room 116"。
+- 图片是 `public/seating-116.webp`，来自 Lingtong 给的 `PG6 Map 116 - November 7 2026.pptx.pdf`：用 `pdftoppm` 按 200 dpi 转成 PNG（2667 × 1500），再转成 WebP（217 KB），放大以后队名也看得清。
+- 点图片会在新页面打开原图，可以两指放大。
+- `<img>` 上写了 `width` 和 `height`，图片还没加载完时也会先占好位置，页面不会跳。
+- 以后座位有变化：把新的 PDF 同样转一次，覆盖 `public/seating-116.webp`，然后 push。
 
 ## 时间表为什么放在 JSON 文件里
 

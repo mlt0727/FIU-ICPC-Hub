@@ -41,6 +41,21 @@ export default async function Home({ searchParams }: Props) {
       <h2 className="section-title">Schedule</h2>
       <TaskList cards={eventCards()} serverNow={frozen ? frozenNow : Date.now()} frozen={frozen} />
 
+      {/* Seating chart from the organizers (PG6 Map 116 – November 7 2026), shown as one picture. */}
+      <h2 className="section-title">Seating in Room 116</h2>
+      <div className="card">
+        <p className="card-loc">Find your team&apos;s table for the contest. Tap the picture to open it full size and zoom in.</p>
+        <a href="/seating-116.webp" target="_blank" rel="noopener noreferrer" className="seating-link">
+          {/* eslint-disable-next-line @next/next/no-img-element -- one static picture, no resizing needed */}
+          <img
+            src="/seating-116.webp"
+            width={2667}
+            height={1500}
+            alt="Seating chart for Room 116: each table shows the school, division (D1 or D2) and team name."
+          />
+        </a>
+      </div>
+
       <h2 className="section-title">Map of PG6</h2>
       <div className="card">
         <RoomMap

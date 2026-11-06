@@ -447,3 +447,17 @@ main a {
 .card.done .instructions p {
   color: var(--text-done);
 }
+
+/* Room 116 seating chart on the main page (app/page.tsx) */
+.seating-link {
+  display: block;
+  margin-top: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+.seating-link img {
+  display: block;
+  width: 100%;
+  height: auto; /* width/height on the tag keep the space reserved while it loads */
+}
