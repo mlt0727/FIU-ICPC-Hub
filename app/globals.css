@@ -461,3 +461,18 @@ main a {
   width: 100%;
   height: auto; /* width/height on the tag keep the space reserved while it loads */
 }
+
+/* /seating page: the chart is drawn about twice the screen width so team names are readable;
+   the box scrolls sideways on its own, the page itself never does. */
+.seating-full {
+  margin-top: 12px;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: #fff;
+  -webkit-overflow-scrolling: touch;
+}
+.seating-full img {
+  display: block;
+  width: max(100%, 900px);
+  height: auto;
+}

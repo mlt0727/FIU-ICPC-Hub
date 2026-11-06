@@ -53,6 +53,7 @@ Excel 名单 ──(npm run db:import)──▶ Neon 数据库 ◀──(管理�
 | `globals.css` | — | 全部样式，颜色和设计规范一致 | step-2 |
 | `page.tsx` | `/` | 主页面：时间表、地图、午饭，所有人看到的都一样 | step-3 |
 | `[slug]/page.tsx` | `/名字` | 志愿者个人页 | step-2 |
+| `seating/page.tsx` | `/seating` | 116 座位表的大图页面，可以左右滑动和放大，有返回链接 | step-3 |
 | `not-found.tsx` | 打错的网址 | "找不到页面" | step-2 |
 | `manifest/route.ts`、`manifest/[slug]/route.ts` | `/manifest`、`/manifest/名字` | 添加到主屏幕用的说明，每人一份 | step-2 |
 | `icons/[size]/route.tsx` | `/icons/180` 等 | 用代码画出主屏幕图标 | step-2 |

@@ -128,7 +128,7 @@ export async function addShift(form: FormData) {
 // ---------- Volunteers ----------
 
 // Paths the site already uses: a volunteer with one of these as their link would be hidden behind them.
-const TAKEN = new Set(["admin", "api", "manifest", "icons", "overview"]);
+const TAKEN = new Set(["admin", "api", "manifest", "icons", "overview", "seating"]);
 
 export type AddResult = { error: string } | null;
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { cookies } from "next/headers";
 import { RoomMap } from "@/components/room-map";
 import { TaskList } from "@/components/task-list";
@@ -44,8 +45,9 @@ export default async function Home({ searchParams }: Props) {
       {/* Seating chart from the organizers (PG6 Map 116 – November 7 2026), shown as one picture. */}
       <h2 className="section-title">Seating in Room 116</h2>
       <div className="card">
-        <p className="card-loc">Find your team&apos;s table for the contest. Tap the picture to open it full size and zoom in.</p>
-        <a href="/seating-116.webp" target="_blank" rel="noopener noreferrer" className="seating-link">
+        <p className="card-loc">Find your team&apos;s table for the contest. Tap the picture to open a bigger view.</p>
+        {/* Opens our /seating page, not the bare image: inside the Home Screen app a bare image has no way back. */}
+        <Link href="/seating" className="seating-link">
           {/* eslint-disable-next-line @next/next/no-img-element -- one static picture, no resizing needed */}
           <img
             src="/seating-116.webp"
@@ -53,7 +55,7 @@ export default async function Home({ searchParams }: Props) {
             height={1500}
             alt="Seating chart for Room 116: each table shows the school, division (D1 or D2) and team name."
           />
-        </a>
+        </Link>
       </div>
 
       <h2 className="section-title">Map of PG6</h2>

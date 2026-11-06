@@ -64,7 +64,7 @@
 
 ## 计划和进度
 
-1. ✅ **数据库 + Excel 导入**：5 张表已建好，数据已导入（48 人、15 种任务、162 个时段，没有任何警告）。另外加了 Lingtong 的测试数据和新任务 Breakfast Setup（见 `db/test-lingtong.sql`）。2026-10-31 又加了 **Talin Malki**（`/talin-malki`，Excel 里没有，见 `db/extra-volunteers.sql`）：Extra → Orientation → Lunch → Balloon Running → Dinner Setup → Awards → Event Break Down，时间照 Ahmed Mostafa 的。现在数据库共 50 人。
+1. ✅ **数据库 + Excel 导入**：5 张表已建好，数据已导入（48 人、15 种任务、162 个时段，没有任何警告）。另外加了 Lingtong 的测试数据和新任务 Breakfast Setup（见 `db/test-lingtong.sql`）。2026-10-31 又加了 **Talin Malki**（`/talin-malki`，Excel 里没有，见 `db/extra-volunteers.sql`）：Extra → Orientation → Lunch → Balloon Running → Dinner Setup → Awards → Event Break Down，时间照 Ahmed Mostafa 的。现在数据库共 50 人。2026-11-06：技术组的 **Tarun 换成了 Azam Shirali**（直接改了数据库里那一行的名字和链接：`/tarun` → `/azam-shirali`，时间不变 8:00 AM–2:00 PM）。**注意**：`--reset` 重新导入旧 Excel 会把 Tarun 加回来。
 2. ✅ **志愿者页面 + 管理页**（都已上线）
    - ✅ 设计系统（`design-system/icpc-checkpoint/MASTER.md`）。
    - ✅ Next.js 16 网站：个人页、通用首页、cookie 记住身份、名字打错的 404 页、每人自己的 manifest、主屏幕图标。讲解见 `docs/step-2-explained.md`。
@@ -94,7 +94,7 @@
    - 志愿者两个标签：My schedule 和 Contest day，本地测过可以来回切换。
    - ✅ 时间表已经按 Lingtong 给的海报填好：Registration 10:00 → Orientation 11:00 → Practice contest 12:00–1:30 → Lunch 12:30–1:45（8th Street Campus Kitchen，Graham Center 里）→ Move to contest area 1:45 → Contest 2:00–7:00（全部在 116）→ Dinner 7:00–7:30 → Awards 7:30–8:00。112 是教练的位置。参赛者没有早餐；晚饭参赛者和志愿者都有。
    - ✅ Lingtong 确认：参赛者 Orientation 在 116，Dinner 和 Awards 在 Lobby。
-   - ✅ 座位表（2026-11-06）：主页面 "Seating in Room 116"，图片 `public/seating-116.webp`，来自 Lingtong 的 PDF。点图片打开原图可放大。本地测过，等 push。
+   - ✅ 座位表（2026-11-06）：主页面 "Seating in Room 116"，图片 `public/seating-116.webp`，来自 Lingtong 的 PDF。点图片进入 `/seating` 页面（有返回链接，图片可以左右滑动、两指放大）。原来是直接打开图片文件，在主屏幕 app 里会顶到状态栏下面、而且没法返回，2026-11-06 改掉了。本地测过，等 push。
 4. ✅ **推送通知**（讲解见 `docs/step-4-explained.md`）
    - ✅ 本地写好、build 通过：
      - "Turn on reminders" 按钮：iPhone 在 Safari 里打开时，会提示先添加到主屏幕。
