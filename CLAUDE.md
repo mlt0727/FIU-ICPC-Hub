@@ -94,7 +94,7 @@
    - 志愿者两个标签：My schedule 和 Contest day，本地测过可以来回切换。
    - ✅ 时间表已经按 Lingtong 给的海报填好：Registration 10:00 → Orientation 11:00 → Practice contest 12:00–1:30 → Lunch 12:30–1:45（8th Street Campus Kitchen，Graham Center 里）→ Move to contest area 1:45 → Contest 2:00–7:00（全部在 116）→ Dinner 7:00–7:30 → Awards 7:30–8:00。112 是教练的位置。参赛者没有早餐；晚饭参赛者和志愿者都有。
    - ✅ Lingtong 确认：参赛者 Orientation 在 116，Dinner 和 Awards 在 Lobby。
-   - ✅ 座位表（2026-11-06）：主页面 "Seating in Room 116"，图片 `public/seating-116.webp`，来自 Lingtong 的 PDF。点图片进入 `/seating` 页面（有返回链接，图片可以左右滑动、两指放大）。原来是直接打开图片文件，在主屏幕 app 里会顶到状态栏下面、而且没法返回，2026-11-06 改掉了。本地测过，等 push。
+   - ✅ 座位表（2026-11-06）：主页面 "Seating in Room 116"，图片 `public/seating-116.webp`，来自 Lingtong 的 PDF。点图片进入 `/seating` 页面（有返回链接，图片可以左右滑动、两指放大）。原来是直接打开图片文件，在主屏幕 app 里会顶到状态栏下面、而且没法返回，2026-11-06 改掉了。横屏时图片会铺满整个屏幕宽度。所有页面顶部留白改成"状态栏 + 44px"（20px 在真机上还会被状态栏下面的模糊盖住）。本地测过，等 push。
 4. ✅ **推送通知**（讲解见 `docs/step-4-explained.md`）
    - ✅ 本地写好、build 通过：
      - "Turn on reminders" 按钮：iPhone 在 Safari 里打开时，会提示先添加到主屏幕。

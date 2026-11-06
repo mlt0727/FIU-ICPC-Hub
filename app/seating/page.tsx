@@ -24,7 +24,7 @@ export default function SeatingPage() {
           alt="Seating chart for Room 116: each table shows the school, division (D1 or D2) and team name."
         />
       </div>
-      <p className="card-time">Tip: turn your phone sideways for a bigger view.</p>
+      <p className="card-time seating-tip">Tip: turn your phone sideways for a bigger view.</p>
     </>
   );
 }

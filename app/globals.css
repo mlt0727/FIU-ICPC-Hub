@@ -29,12 +29,13 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
-/* One centered column, at most 480px wide. env(...) is the height of the notch / status bar / home bar;
-   the top adds 20px on top of it so the first line doesn't sit right under the (blurred) status bar. */
+/* One centered column, at most 480px wide. env(...) is the height of the notch / status bar / home bar.
+   The top adds 44px on top of it: newer iPhones fade the area just under the status bar in Home Screen
+   apps, and 20px still left the first line inside that fade (seen on a real iPhone, 2026-11-06). */
 main {
   max-width: 480px;
   margin: 0 auto;
-  padding: calc(env(safe-area-inset-top) + 20px) max(16px, env(safe-area-inset-right))
+  padding: calc(env(safe-area-inset-top) + 44px) max(16px, env(safe-area-inset-right))
     max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
 }
 
@@ -470,9 +471,25 @@ main a {
   border-radius: 8px;
   background: #fff;
   -webkit-overflow-scrolling: touch;
+  /* Break out of the 480px column: as wide as the screen minus the side gutters (and the notch in
+     landscape), centred on the page. In portrait this is the same as the column; sideways it grows. */
+  width: calc(100vw - max(16px, env(safe-area-inset-left)) - max(16px, env(safe-area-inset-right)));
+  max-width: 1400px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .seating-full img {
   display: block;
-  width: max(100%, 900px);
+  width: max(100%, 900px); /* portrait: wider than the screen, swipe sideways inside the box */
   height: auto;
+}
+/* Phone turned sideways (or a wide screen): the whole room fits, no swiping needed. */
+@media (orientation: landscape) {
+  .seating-full img {
+    width: 100%;
+  }
+  .seating-tip {
+    display: none;
+  }
 }
