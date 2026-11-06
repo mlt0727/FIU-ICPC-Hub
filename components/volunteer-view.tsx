@@ -16,7 +16,7 @@ function checkInCard(arriveAt: string): Card {
     location: CHECK_IN_LOCATION,
     // Rule from the organizers: check in before anything else, even if lunch starts at the same time.
     instructions:
-      "When you arrive, come to **Room 112 first** and check in, before your first task and before lunch.\nThen go to your next card.",
+      "When you arrive, come to **Room 112 first** and check in, before your first task or before lunch.\nThen go to your next card.",
     rooms: roomsIn(CHECK_IN_LOCATION),
     mapsUrl: null,
     startsAt: arriveAt,
